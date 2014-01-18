@@ -24,6 +24,7 @@ public class Particle extends Entity {
 		z = rand.nextFloat();
 	}
 
+	@Override
 	public void update() {
 		if ((System.currentTimeMillis() - lastTime) > life) {
 			remove();
@@ -59,12 +60,14 @@ public class Particle extends Entity {
 					.ceil(xc);
 			int yi = (corner / 2 == 0) ? (int) Math.floor(yc) : (int) Math
 					.ceil(yc);
-			if (Game.level.getTile(xi, yi).isSolid())
+			if (Game.level.getTile(xi, yi).isSolid()) {
 				return true;
+			}
 		}
 		return false;
 	}
 
+	@Override
 	public void render(Screen screen) {
 		screen.render((int) x, (int) y - (int) z, tile, false);
 	}

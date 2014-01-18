@@ -29,34 +29,40 @@ public abstract class Mob extends Entity {
 	}
 
 	public void move(double nx, double ny) {
-		if (ny > 0)
+		if (ny > 0) {
 			dir = 2;
-		else if (ny < 0)
+		} else if (ny < 0) {
 			dir = 0;
-		if (nx > 0)
+		}
+		if (nx > 0) {
 			dir = 3;
-		else if (nx < 0)
+		} else if (nx < 0) {
 			dir = 1;
+		}
 		while (nx != 0) {
 			if (nx > 1) {
-				if (!isCollision(x + getSignedValue(nx), y))
+				if (!isCollision(x + getSignedValue(nx), y)) {
 					x += getSignedValue(nx);
+				}
 				nx -= getSignedValue(nx);
 			} else {
-				if (!isCollision(x + nx, y))
+				if (!isCollision(x + nx, y)) {
 					x += nx;
+				}
 				nx = 0;
 			}
 		}
 
 		while (ny != 0) {
 			if (ny > 1) {
-				if (!isCollision(x, y + getSignedValue(ny)))
+				if (!isCollision(x, y + getSignedValue(ny))) {
 					y += getSignedValue(ny);
+				}
 				ny -= getSignedValue(ny);
 			} else {
-				if (!isCollision(x, y + ny))
+				if (!isCollision(x, y + ny)) {
 					y += ny;
+				}
 				ny = 0;
 			}
 		}
@@ -67,8 +73,9 @@ public abstract class Mob extends Entity {
 		for (int corner = 0; corner < 4; corner++) {
 			int xc = (int) (x + corner % 2 * 15 + 8) >> 4;
 			int yc = (int) (y + corner / 2 * 10 + 22) >> 4;
-			if (Game.level.getTile(xc, yc).isSolid())
+			if (Game.level.getTile(xc, yc).isSolid()) {
 				return true;
+			}
 		}
 		return collision;
 	}
@@ -87,8 +94,10 @@ public abstract class Mob extends Entity {
 		Game.level.addEntity(projectile);
 	}
 
+	@Override
 	public abstract void update();
 
+	@Override
 	public abstract void render(Screen screen);
 
 }

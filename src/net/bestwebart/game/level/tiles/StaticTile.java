@@ -9,13 +9,16 @@ public class StaticTile extends Tile {
 		super(id, sprite, false);
 	}
 
+	@Override
 	public boolean isSolid() {
 		return solid;
 	}
 
+	@Override
 	public void update() {
 	}
 
+	@Override
 	public void render(int x, int y, Screen screen) {
 		screen.render(x << 4, y << 4, this, false);
 	}

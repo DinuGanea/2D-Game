@@ -55,8 +55,9 @@ public class Sprite {
 	public Sprite(int color, int size) {
 		this.SIZE = size;
 		pixels = new int[SIZE * SIZE];
-		for (int i = 0; i < SIZE * SIZE; i++)
+		for (int i = 0; i < SIZE * SIZE; i++) {
 			pixels[i] = color;
+		}
 	}
 
 	public Sprite(int x, int y, SpriteSheet sheet, int width, int height,

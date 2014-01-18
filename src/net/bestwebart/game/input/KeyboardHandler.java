@@ -15,14 +15,17 @@ public class KeyboardHandler implements KeyListener {
 		right = keys[KeyEvent.VK_D] || keys[KeyEvent.VK_RIGHT];
 	}
 
+	@Override
 	public void keyPressed(KeyEvent e) {
 		keys[e.getKeyCode()] = true;
 	}
 
+	@Override
 	public void keyReleased(KeyEvent e) {
 		keys[e.getKeyCode()] = false;
 	}
 
+	@Override
 	public void keyTyped(KeyEvent e) {
 
 	}

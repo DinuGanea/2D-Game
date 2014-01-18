@@ -9,9 +9,7 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
-import net.bestwebart.game.entity.mob.BadTonny;
 import net.bestwebart.game.entity.mob.Player;
-import net.bestwebart.game.entity.mob.Tonny;
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.input.KeyboardHandler;
 import net.bestwebart.game.input.MouseHandler;
@@ -84,6 +82,7 @@ public class Game extends Canvas implements Runnable {
 		}
 	}
 
+	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
 		long now = 0l;
@@ -141,14 +140,18 @@ public class Game extends Canvas implements Runnable {
 		xScroll = (int) player.x - WIDTH / 2 + 16;
 		yScroll = (int) player.y - HEIGHT / 2 + 16;
 
-		if (xScroll < 0)
+		if (xScroll < 0) {
 			xScroll = 0;
-		if (yScroll < 0)
+		}
+		if (yScroll < 0) {
 			yScroll = 0;
-		if (xScroll > level.getLevelWidth() - WIDTH)
+		}
+		if (xScroll > level.getLevelWidth() - WIDTH) {
 			xScroll = level.getLevelWidth() - WIDTH;
-		if (yScroll > level.getLevelHeight() - HEIGHT)
+		}
+		if (yScroll > level.getLevelHeight() - HEIGHT) {
 			yScroll = level.getLevelHeight() - HEIGHT;
+		}
 
 		level.renderMap(xScroll, yScroll, screen);
 		level.renderEntities(screen);

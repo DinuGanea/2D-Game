@@ -22,10 +22,12 @@ public class SimpleProjectile2 extends Projectile {
 
 	}
 
+	@Override
 	public void update() {
 		// if (!isExceedingFlyDistance()) move(nx, ny); else remove();
 	}
 
+	@Override
 	public void render(Screen screen) {
 		screen.render((int) x, (int) y, tile, false);
 	}
@@ -34,24 +36,28 @@ public class SimpleProjectile2 extends Projectile {
 		while (nx != 0 && ny != 0) {
 			if (nx > 1) {
 				if (!Game.level.isTileCollision((int) x + getSignedValue(nx),
-						(int) y, size, xOffset, yOffset))
+						(int) y, size, xOffset, yOffset)) {
 					x += getSignedValue(nx);
+				}
 				nx -= getSignedValue(nx);
 			} else {
 				if (!Game.level.isTileCollision((int) (x + nx), (int) y, size,
-						xOffset, yOffset))
+						xOffset, yOffset)) {
 					x += nx;
+				}
 				nx = 0;
 			}
 			if (ny > 1) {
 				if (!Game.level.isTileCollision((int) x, (int) y
-						+ getSignedValue(ny), size, xOffset, yOffset))
+						+ getSignedValue(ny), size, xOffset, yOffset)) {
 					y += getSignedValue(ny);
+				}
 				ny -= getSignedValue(ny);
 			} else {
 				if (!Game.level.isTileCollision((int) x, (int) (y + ny), size,
-						xOffset, yOffset))
+						xOffset, yOffset)) {
 					y += ny;
+				}
 				ny = 0;
 			}
 		}

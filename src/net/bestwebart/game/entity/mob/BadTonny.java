@@ -28,13 +28,15 @@ public class BadTonny extends Mob {
 
 	}
 
+	@Override
 	public void update() {
 
 		double nx = 0d, ny = 0d;
-		if (time > 10000)
+		if (time > 10000) {
 			time = 0;
-		else
+		} else {
 			time++;
+		}
 
 		if (time % 20 == 0) {
 			int pX = (int) Game.level.getPlayer().x + 16 >> 4;
@@ -52,14 +54,16 @@ public class BadTonny extends Mob {
 			int tx = (path.get(path.size() - tile_step).tile.getX() << 4) - 8;
 			int ty = (path.get(path.size() - tile_step).tile.getY() << 4) - 8;
 
-			if (tx > x)
+			if (tx > x) {
 				nx += speed;
-			else if (tx < x)
+			} else if (tx < x) {
 				nx -= speed;
-			if (ty > y)
+			}
+			if (ty > y) {
 				ny += speed;
-			else if (ty < y)
+			} else if (ty < y) {
 				ny -= speed;
+			}
 
 			mob_steps++;
 			if (mob_steps == 16) {
@@ -77,10 +81,11 @@ public class BadTonny extends Mob {
 
 		}
 
-		if (ny > 0)
+		if (ny > 0) {
 			animTile = (AnimatedTile) Tile.BAD_TONNY_DOWN;
-		else if (ny < 0)
+		} else if (ny < 0) {
 			animTile = (AnimatedTile) Tile.BAD_TONNY_UP;
+		}
 
 		if (nx > 0) {
 			animTile = (AnimatedTile) Tile.BAD_TONNY_SIDE;
@@ -110,6 +115,7 @@ public class BadTonny extends Mob {
 	// return collision;
 	// }
 
+	@Override
 	public void render(Screen screen) {
 		screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);
 	}

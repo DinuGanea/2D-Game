@@ -33,15 +33,18 @@ public class Vector2i {
 		return Math.sqrt(x * x + y * y);
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Vector2i) {
 			Vector2i v = (Vector2i) o;
-			if (this.x == v.x && this.y == v.y)
+			if (this.x == v.x && this.y == v.y) {
 				return true;
+			}
 		}
 		return false;
 	}
 
+	@Override
 	public String toString() {
 		return this.x + " " + this.y;
 	}

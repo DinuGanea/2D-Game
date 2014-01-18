@@ -57,31 +57,34 @@ public class Level {
 	}
 
 	public Tile getTile(int x, int y) {
-		if (x < 0 || x >= width || y < 0 || y >= height)
+		if (x < 0 || x >= width || y < 0 || y >= height) {
 			return Tile.VOID;
+		}
 		return getTile(tiles[x + y * width]);
 	}
 
 	public Tile getTile(int i) {
-		if (i < 0 || i >= Tile.tiles.length)
+		if (i < 0 || i >= Tile.tiles.length) {
 			return Tile.VOID;
+		}
 		return Tile.tiles[i];
 	}
 
 	public int getTileByColor(int col) {
 		switch (col) {
-		case Tile.GRASS_COL:
-			return 1;
-		case Tile.WALL_COL:
-			return 2;
-		default:
-			return 0;
+			case Tile.GRASS_COL:
+				return 1;
+			case Tile.WALL_COL:
+				return 2;
+			default:
+				return 0;
 		}
 	}
 
 	public void changeTileAt(int x, int y) {
-		if (x < 0 || x >= width || y < 0 || y >= height)
+		if (x < 0 || x >= width || y < 0 || y >= height) {
 			return;
+		}
 		if (getTile(tiles[x + y * width]).isSolid()
 				&& getTile(tiles[x + y * width]).canBeDamaged()) {
 			if (!getTile(tiles[x + y * width]).isDamaged()) {
@@ -117,8 +120,9 @@ public class Level {
 
 		for (int y = y0; y < y1; y++) {
 			for (int x = x0; x < x1; x++) {
-				if (x < 0 || x >= width || y < 0 || y >= height)
+				if (x < 0 || x >= width || y < 0 || y >= height) {
 					continue;
+				}
 				getTile(tiles[x + y * width]).render(x, y, screen);
 			}
 		}
@@ -144,21 +148,24 @@ public class Level {
 		for (int corner = 0; corner < 4; corner++) {
 			int xc = (x + corner % 2 * size + xOffset) >> 4;
 			int yc = (y + corner / 2 * size + yOffset) >> 4;
-			if (getTile(xc, yc).isSolid())
+			if (getTile(xc, yc).isSolid()) {
 				return true;
+			}
 		}
 
 		return false;
 	}
 
 	private Comparator<Node> nodeSort = new Comparator<Node>() {
+		@Override
 		public int compare(Node n0, Node n1) {
-			if (n0.fCost > n1.fCost)
+			if (n0.fCost > n1.fCost) {
 				return 1;
-			else if (n0.fCost < n1.fCost)
+			} else if (n0.fCost < n1.fCost) {
 				return -1;
-			else
+			} else {
 				return 0;
+			}
 		}
 	};
 
@@ -194,12 +201,14 @@ public class Level {
 					int nbY = (i / 3) - 1;
 
 					if (getTile(cX + nbX, cY + nbY) == null
-							|| getTile(cX + nbX, cY + nbY).isSolid())
+							|| getTile(cX + nbX, cY + nbY).isSolid()) {
 						continue;
+					}
 					Vector2i nbV = new Vector2i(cX + nbX, cY + nbY);
 
-					if (getNodeFromList(nbV, closedList) != null)
+					if (getNodeFromList(nbV, closedList) != null) {
 						continue;
+					}
 
 					double gCost = current.gCost
 							+ current.tile.getDistance(nbV);
@@ -227,8 +236,9 @@ public class Level {
 
 	private Node getNodeFromList(Vector2i v, List<Node> list) {
 		for (Node node : list) {
-			if (node.tile.equals(v))
+			if (node.tile.equals(v)) {
 				return node;
+			}
 		}
 		return null;
 	}

@@ -16,6 +16,7 @@ public class Tonny extends Mob {
 		time = 0;
 	}
 
+	@Override
 	public void update() {
 		time = (time > 1000000000) ? 0 : time + 1;
 
@@ -26,15 +27,18 @@ public class Tonny extends Mob {
 			nx = (rand.nextInt(3) - 1) * speed;
 			ny = (rand.nextInt(3) - 1) * speed;
 
-			if (isCollision(x + nx, y))
+			if (isCollision(x + nx, y)) {
 				nx *= -speed;
-			if (isCollision(x, ny + y))
+			}
+			if (isCollision(x, ny + y)) {
 				ny *= -speed;
+			}
 
-			if (ny > 0)
+			if (ny > 0) {
 				animTile = (AnimatedTile) Tile.TONNY_DOWN;
-			else if (ny < 0)
+			} else if (ny < 0) {
 				animTile = (AnimatedTile) Tile.TONNY_UP;
+			}
 
 			if (nx > 0) {
 				animTile = (AnimatedTile) Tile.TONNY_SIDE;
@@ -59,6 +63,7 @@ public class Tonny extends Mob {
 
 	}
 
+	@Override
 	public void render(Screen screen) {
 		screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);
 	}

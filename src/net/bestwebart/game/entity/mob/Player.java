@@ -21,14 +21,17 @@ public class Player extends Mob {
 		flip = false;
 	}
 
+	@Override
 	public void update() {
 
-		if (shoots > 0)
+		if (shoots > 0) {
 			shoots--;
+		}
 		updateShooting();
 
-		if (moving)
+		if (moving) {
 			animTile.update();
+		}
 		tileNr = animTile.getCurrFrame();
 		double nx = 0;
 		double ny = 0;
@@ -72,6 +75,7 @@ public class Player extends Mob {
 		}
 	}
 
+	@Override
 	public void render(Screen screen) {
 		screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);
 	}

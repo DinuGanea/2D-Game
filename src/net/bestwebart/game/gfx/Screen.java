@@ -24,11 +24,13 @@ public class Screen {
 			int yp = yPos + y;
 			for (int x = 0; x < tile.sprite.SIZE; x++) {
 				int xp = xPos + x;
-				if (xp < 0 || xp >= width || yp < 0 || yp >= height)
+				if (xp < 0 || xp >= width || yp < 0 || yp >= height) {
 					continue;
+				}
 				int col = tile.sprite.pixels[x + y * tile.sprite.SIZE];
-				if (col != 0xffff00ff)
+				if (col != 0xffff00ff) {
 					pixels[xp + yp * width] = col;
+				}
 			}
 		}
 	}
@@ -42,12 +44,14 @@ public class Screen {
 			for (int x = 0; x < tile.sprite.SIZE; x++) {
 				int flipX = (flip) ? tile.sprite.SIZE - x - 1 : x;
 				int xp = xPos + x;
-				if (xp < 0 || xp >= width || yp < 0 || yp >= height)
+				if (xp < 0 || xp >= width || yp < 0 || yp >= height) {
 					continue;
+				}
 				int col = tile.sprite.pixels[flipX
 						+ (y + tileNr * tile.sprite.SIZE) * tile.sprite.SIZE];
-				if (col != 0xffff00ff)
+				if (col != 0xffff00ff) {
 					pixels[xp + yp * width] = col;
+				}
 			}
 		}
 	}
