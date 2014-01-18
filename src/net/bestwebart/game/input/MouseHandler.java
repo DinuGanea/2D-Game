@@ -6,53 +6,52 @@ import java.awt.event.MouseMotionListener;
 
 public class MouseHandler implements MouseListener, MouseMotionListener {
 
-    private int x, y;
-    private int button;
+	private int x, y;
+	private int button;
 
-    public MouseHandler() {
-	x = 0;
-	y = 0;
-    }
+	public MouseHandler() {
+		x = 0;
+		y = 0;
+	}
 
-    public void mousePressed(MouseEvent e) {
-	x = e.getX();
-	y = e.getY();
-	button = e.getButton();
-    }
-    
-    public void mouseDragged(MouseEvent e) {
-	x = e.getX();
-	y = e.getY();
-    }
+	public void mousePressed(MouseEvent e) {
+		x = e.getX();
+		y = e.getY();
+		button = e.getButton();
+	}
 
-    public void mouseMoved(MouseEvent e) {
-	x = e.getX();
-	y = e.getY();
-    }
-    
-    
-    public void mouseReleased(MouseEvent e) {
-	button = -1;
-    }
+	public void mouseDragged(MouseEvent e) {
+		x = e.getX();
+		y = e.getY();
+	}
 
-    public int getClickedButton() {
-	return button;
-    }
+	public void mouseMoved(MouseEvent e) {
+		x = e.getX();
+		y = e.getY();
+	}
 
-    public int getX() {
-	return x;
-    }
+	public void mouseReleased(MouseEvent e) {
+		button = -1;
+	}
 
-    public int getY() {
-	return y;
-    }
+	public int getClickedButton() {
+		return button;
+	}
 
-    public void mouseExited(MouseEvent e) {
-    }
+	public int getX() {
+		return x;
+	}
 
-    public void mouseEntered(MouseEvent e) {
-    }
+	public int getY() {
+		return y;
+	}
 
-    public void mouseClicked(MouseEvent e) {
-    }
+	public void mouseExited(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseClicked(MouseEvent e) {
+	}
 }
