@@ -4,9 +4,13 @@ import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.gfx.Sprite;
 
 public class StaticTile extends Tile {
-
-    public StaticTile(int id, Sprite sprite, boolean solid) {
-	super(id, sprite, solid);
+    
+    public StaticTile(int id, Sprite sprite) {
+	super(id, sprite, false);
+    }
+    
+    public boolean isSolid() {
+	return solid;
     }
 
     public void update() {

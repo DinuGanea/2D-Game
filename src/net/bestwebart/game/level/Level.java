@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import net.bestwebart.game.entity.Entity;
 import net.bestwebart.game.gfx.Screen;
+import net.bestwebart.game.level.tiles.AnimatedTile;
 import net.bestwebart.game.level.tiles.Tile;
 import net.bestwebart.game.util.Vector2i;
 
@@ -68,12 +69,27 @@ public class Level {
     public int getTileByColor(int col) {
 	switch (col) {
 	case Tile.GRASS_COL:
-	    return 0;
-	case Tile.WALL_COL:
 	    return 1;
-	default:
+	case Tile.WALL_COL:
 	    return 2;
+	default:
+	    return 0;
 	}
+    }
+    
+    public void changeTileAt(int x, int y) {
+	if (x < 0 || x >= width || y < 0 || y >= height) return;
+	if (getTile(tiles[x + y * width]).isSolid() && getTile(tiles[x + y * width]).canBeDamaged()) { 
+	    if (!getTile(tiles[x + y * width]).isDamaged()) {
+		tiles[x + y * width] = getTile(tiles[x + y * width]).getDamageTile().getID();
+		getTile(tiles[x + y * width]).damage();
+	    } else {
+		AnimatedTile anTile = (AnimatedTile) getTile(tiles[x + y * width]);
+		anTile.nextFrame();
+		anTile.setCurrFrameTo(0);
+	    }
+	}
+	//tiles[x + y * width][0] = tile.getID();
     }
 
     public void update() {
@@ -139,7 +155,7 @@ public class Level {
 	List<Node> openList = new ArrayList<Node>();
 	List<Node> closedList = new ArrayList<Node>();
 
-	Node current = new Node(start, null, 0, start.getDistance(finish), getSolidNeighbours(start));
+	Node current = new Node(start, null, 0, start.getDistance(finish));
 	openList.add(current);
 	while (openList.size() > 0) {
 	    Collections.sort(openList, nodeSort);
@@ -181,7 +197,7 @@ public class Level {
 			    nbN.hCost = hCost;
 			    nbN.fCost = gCost + hCost;
 			} else {
-			    nbN = new Node(nbV, current, gCost, hCost, getSolidNeighbours(nbV));
+			    nbN = new Node(nbV, current, gCost, hCost);
 			    openList.add(nbN);
 			}
 		    }
@@ -193,22 +209,6 @@ public class Level {
 	return null;
     }
 
-    private List<Byte> getSolidNeighbours(Vector2i v) {
-	List<Byte> solidNb = new ArrayList<Byte>();
-	if (getTile(v.getX(), v.getY() - 1).isSolid()) {
-	    solidNb.add((byte) 0);
-	}
-	if (getTile(v.getX() + 1, v.getY()).isSolid()) {
-	    solidNb.add((byte) 1);	   
-	}
-	if (getTile(v.getX(), v.getY() + 1).isSolid()) {
-	    solidNb.add((byte) 2);	   
-	}
-	if (getTile(v.getX() - 1, v.getY()).isSolid()) {
-	    solidNb.add((byte) 3);	   
-	}
-	return solidNb;
-    }
 
     private Node getNodeFromList(Vector2i v, List<Node> list) {
 	for (Node node : list) {

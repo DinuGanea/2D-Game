@@ -5,9 +5,9 @@ import net.bestwebart.game.gfx.Sprite;
 
 public class AnimatedTile extends Tile {
     
-    private int transitionPeriod;
-    private long lTransitionTime;
-    private int currFrame, framesNr;
+    protected int transitionPeriod;
+    protected long lTransitionTime;
+    protected int currFrame, framesNr;
     
     public AnimatedTile(int id, Sprite sprite, boolean solid, int transitionPeriod, int frames) {
 	super(id, sprite, solid);
@@ -29,12 +29,18 @@ public class AnimatedTile extends Tile {
 	screen.renderAnimatedTiles(x << 4, y << 4, this, false, currFrame);
     }
     
-    public void setCurrTileTo(int nr) {
+    public void setCurrFrameTo(int nr) {
 	currFrame = nr;
     }
     
     public int getCurrFrame() {
 	return currFrame;
+    }
+    
+    public void nextFrame() {
+	if (currFrame < framesNr - 1) {
+	    currFrame++; 
+	}
     }
    
 

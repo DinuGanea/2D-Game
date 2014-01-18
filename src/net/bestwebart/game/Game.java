@@ -21,9 +21,9 @@ public class Game extends Canvas implements Runnable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int WIDTH = 600;
+    public static final int WIDTH = 700;
     public static final int HEIGHT = WIDTH / 16 * 9;
-    private static final int SCALE = 1;
+    public static final int SCALE = 2;
     
     private static final Dimension SIZE = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
 
@@ -61,8 +61,8 @@ public class Game extends Canvas implements Runnable {
 	
 	level.addEntity(player);
 	
-	level.addEntity(new Tonny(10, 10));
-	level.addEntity(new BadTonny(240, 230));
+	//level.addEntity(new Tonny(10, 10));
+	//level.addEntity(new BadTonny(240, 230));
 	
 	
 	addKeyListener(key);

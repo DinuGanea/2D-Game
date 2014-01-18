@@ -49,7 +49,7 @@ public class Tonny extends Mob {
 
 	if (nx == 0 && ny == 0) {
 	    tileNr = 0;
-	    animTile.setCurrTileTo(0);
+	    animTile.setCurrFrameTo(0);
 	} else {
 	    move(nx, ny);
 	}

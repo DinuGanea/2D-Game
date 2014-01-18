@@ -28,6 +28,7 @@ public class SimpleProjectile extends Projectile {
 	if (!Game.level.isTileCollision((int) (x + nx), (int) (y + ny), size, xOffset, yOffset)) {
 	    move();
 	} else {
+	    Game.level.changeTileAt((int) (x + nx) >> 4, (int) (y + ny) >> 4);
 	    remove();
 	    new Spawner((int) x + 8,(int) y + 8, 75, Type.PARTICLE );
 	    return;

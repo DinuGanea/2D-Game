@@ -1,6 +1,5 @@
 package net.bestwebart.game.entity.mob;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.bestwebart.game.Game;
@@ -47,31 +46,10 @@ public class BadTonny extends Mob {
 	}
 
 	if (path != null && path.size() > 0) {
-	    List<Byte> solidNb = new ArrayList<Byte>();
-	    solidNb = path.get(path.size() - tile_step).solidNb;
-
-	    int tx = (path.get(path.size() - tile_step).tile.getX() << 4);
-	    int ty = (path.get(path.size() - tile_step).tile.getY() << 4);
+	    int tx = (path.get(path.size() - tile_step).tile.getX() << 4) - 8;
+	    int ty = (path.get(path.size() - tile_step).tile.getY() << 4) - 8;
 	    
 	    
-	    int collision_offset = 3000;
-	    
-	    for (int i = 0; i < solidNb.size(); i++) {
-		switch (solidNb.get(i)) {
-		case 0:
-		    ty -= collision_offset;
-		    break;
-		case 1:
-		    tx += collision_offset;
-		    break;
-		case 2:
-		    ty += collision_offset;
-		    break;
-		case 3:
-		    tx -= collision_offset;
-		    break;
-		}
-	    }
 
 	    if (tx > x) nx += speed;
 	    else if (tx < x) nx -= speed;
@@ -107,7 +85,7 @@ public class BadTonny extends Mob {
 
 	if (nx == 0 && ny == 0) {
 	    tileNr = 0;
-	    animTile.setCurrTileTo(0);
+	    animTile.setCurrFrameTo(0);
 	} else {
 	    move(nx, ny);
 	}

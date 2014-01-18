@@ -13,6 +13,8 @@ public class SpriteSheet {
     
     public static final SpriteSheet TILES = new SpriteSheet("/sprites/tiles.png");
     
+    public static final SpriteSheet WALL_RUIN = new SpriteSheet("/sprites/wall_ruines.png");
+    
     public static final SpriteSheet PLAYER = new SpriteSheet("/sprites/player.png");
     public static final SpriteSheet TONNY = new SpriteSheet("/sprites/tonny.png");
     public static final SpriteSheet BAD_TONNY = new SpriteSheet("/sprites/bad_tonny.png");

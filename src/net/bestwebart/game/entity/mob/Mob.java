@@ -70,8 +70,8 @@ public abstract class Mob extends Entity {
     }
 
     protected void shoot(MouseHandler mouse) {
-	double dx = mouse.getX() - (x - Game.getXScroll()) * 3;
-	double dy = mouse.getY() - (y - Game.getYScroll()) * 3;
+	double dx = mouse.getX() - (x - Game.getXScroll()) * Game.SCALE;
+	double dy = mouse.getY() - (y - Game.getYScroll()) * Game.SCALE;
 
 	double angle = Math.atan2(dy, dx);
 

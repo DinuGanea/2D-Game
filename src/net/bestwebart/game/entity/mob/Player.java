@@ -60,7 +60,7 @@ public class Player extends Mob {
 	    move(nx, ny);
 	} else {
 	    moving = false;
-	    animTile.setCurrTileTo(0);
+	    animTile.setCurrFrameTo(0);
 	}
 	
     }
