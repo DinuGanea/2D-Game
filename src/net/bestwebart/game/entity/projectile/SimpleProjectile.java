@@ -16,8 +16,8 @@ public class SimpleProjectile extends Projectile {
 	this.speed = 4;
 	this.rate = 20;
 
-	this.size = 0;
-	this.xOffset = this.yOffset = 10;
+	this.size = 8;
+	this.xOffset = this.yOffset = 8;
 
 	nx = speed * Math.cos(angle);
 	ny = speed * Math.sin(angle);
