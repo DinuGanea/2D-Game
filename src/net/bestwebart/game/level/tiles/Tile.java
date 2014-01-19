@@ -43,7 +43,9 @@ public abstract class Tile {
 
     public Tile(int id, Sprite sprite, boolean solid) {
 	this.id = id;
-	if (tiles[id] != null) { throw new RuntimeException("Duplicated tile:" + this + " at position:" + id); }
+	if (tiles[id] != null) {
+	    throw new RuntimeException("Duplicated tile:" + this + " at position:" + id);
+	}
 	this.sprite = sprite;
 	this.solid = solid;
 	tiles[id] = this;

@@ -57,7 +57,9 @@ public class Particle extends Entity {
 	    double yc = (y - corner / 2 * 16) / 16;
 	    int xi = (corner % 2 == 0) ? (int) Math.floor(xc) : (int) Math.ceil(xc);
 	    int yi = (corner / 2 == 0) ? (int) Math.floor(yc) : (int) Math.ceil(yc);
-	    if (Game.level.getTile(xi, yi).isSolid()) { return true; }
+	    if (Game.level.getTile(xi, yi).isSolid()) {
+		return true;
+	    }
 	}
 	return false;
     }

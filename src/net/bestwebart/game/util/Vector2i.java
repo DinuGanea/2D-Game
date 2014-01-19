@@ -37,7 +37,9 @@ public class Vector2i {
     public boolean equals(Object o) {
 	if (o instanceof Vector2i) {
 	    Vector2i v = (Vector2i) o;
-	    if (this.x == v.x && this.y == v.y) { return true; }
+	    if (this.x == v.x && this.y == v.y) {
+		return true;
+	    }
 	}
 	return false;
     }

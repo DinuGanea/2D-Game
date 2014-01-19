@@ -73,7 +73,9 @@ public abstract class Mob extends Entity {
 	for (int corner = 0; corner < 4; corner++) {
 	    int xc = (int) (x + corner % 2 * 15 + 8) >> 4;
 	    int yc = (int) (y + corner / 2 * 10 + 22) >> 4;
-	    if (Game.level.getTile(xc, yc).isSolid()) { return true; }
+	    if (Game.level.getTile(xc, yc).isSolid()) {
+		return true;
+	    }
 	}
 	return collision;
     }

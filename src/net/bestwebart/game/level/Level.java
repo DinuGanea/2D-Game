@@ -57,28 +57,34 @@ public class Level {
     }
 
     public Tile getTile(int x, int y) {
-	if (x < 0 || x >= width || y < 0 || y >= height) { return Tile.VOID; }
+	if (x < 0 || x >= width || y < 0 || y >= height) {
+	    return Tile.VOID;
+	}
 	return getTile(tiles[x + y * width]);
     }
 
     public Tile getTile(int i) {
-	if (i < 0 || i >= Tile.tiles.length) { return Tile.VOID; }
+	if (i < 0 || i >= Tile.tiles.length) {
+	    return Tile.VOID;
+	}
 	return Tile.tiles[i];
     }
 
     public int getTileByColor(int col) {
 	switch (col) {
-	case Tile.GRASS_COL:
-	    return 1;
-	case Tile.WALL_COL:
-	    return 2;
-	default:
-	    return 0;
+	    case Tile.GRASS_COL:
+		return 1;
+	    case Tile.WALL_COL:
+		return 2;
+	    default:
+		return 0;
 	}
     }
 
     public void changeTileAt(int x, int y) {
-	if (x < 0 || x >= width || y < 0 || y >= height) { return; }
+	if (x < 0 || x >= width || y < 0 || y >= height) {
+	    return;
+	}
 	if (getTile(tiles[x + y * width]).isSolid() && getTile(tiles[x + y * width]).canBeDamaged()) {
 	    if (!getTile(tiles[x + y * width]).isDamaged()) {
 		tiles[x + y * width] = getTile(tiles[x + y * width]).getDamageTile().getID();
@@ -138,7 +144,9 @@ public class Level {
 	for (int corner = 0; corner < 4; corner++) {
 	    int xc = (x + corner % 2 * size + xOffset) >> 4;
 	    int yc = (y + corner / 2 * size + yOffset) >> 4;
-	    if (getTile(xc, yc).isSolid()) { return true; }
+	    if (getTile(xc, yc).isSolid()) {
+		return true;
+	    }
 	}
 
 	return false;
@@ -222,7 +230,9 @@ public class Level {
 
     private Node getNodeFromList(Vector2i v, List<Node> list) {
 	for (Node node : list) {
-	    if (node.tile.equals(v)) { return node; }
+	    if (node.tile.equals(v)) {
+		return node;
+	    }
 	}
 	return null;
     }
