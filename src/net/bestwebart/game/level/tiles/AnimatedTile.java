@@ -18,7 +18,6 @@ public class AnimatedTile extends Tile {
 		framesNr = frames;
 	}
 
-	@Override
 	public void update() {
 		if (System.currentTimeMillis() - lTransitionTime >= transitionPeriod) {
 			currFrame = (currFrame >= framesNr - 1) ? 0 : currFrame + 1;
@@ -26,7 +25,6 @@ public class AnimatedTile extends Tile {
 		}
 	}
 
-	@Override
 	public void render(int x, int y, Screen screen) {
 		screen.renderAnimatedTiles(x << 4, y << 4, this, false, currFrame);
 	}

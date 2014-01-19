@@ -24,7 +24,6 @@ public class Particle extends Entity {
 		z = rand.nextFloat();
 	}
 
-	@Override
 	public void update() {
 		if ((System.currentTimeMillis() - lastTime) > life) {
 			remove();
@@ -67,7 +66,6 @@ public class Particle extends Entity {
 		return false;
 	}
 
-	@Override
 	public void render(Screen screen) {
 		screen.render((int) x, (int) y - (int) z, tile, false);
 	}

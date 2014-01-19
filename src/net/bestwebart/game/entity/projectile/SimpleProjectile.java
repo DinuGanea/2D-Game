@@ -24,7 +24,6 @@ public class SimpleProjectile extends Projectile {
 
 	}
 
-	@Override
 	public void update() {
 		if (!Game.level.isTileCollision((int) (x + nx), (int) (y + ny), size,
 				xOffset, yOffset)) {
@@ -37,7 +36,6 @@ public class SimpleProjectile extends Projectile {
 		}
 	}
 
-	@Override
 	public void move() {
 		if (getFlownDistance() < range) {
 			x += nx;
@@ -47,7 +45,6 @@ public class SimpleProjectile extends Projectile {
 		}
 	}
 
-	@Override
 	public void render(Screen screen) {
 		screen.render((int) x, (int) y, tile, false);
 	}

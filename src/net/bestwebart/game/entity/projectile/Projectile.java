@@ -19,10 +19,8 @@ public abstract class Projectile extends Entity {
 		this.sy = y;
 	}
 
-	@Override
 	public abstract void update();
 
-	@Override
 	public abstract void render(Screen screen);
 
 	public void move() {
