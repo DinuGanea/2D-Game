@@ -6,11 +6,11 @@ import net.bestwebart.game.level.tiles.Tile;
 
 public class Wall extends StaticTile {
 
-	public Wall(int id, Sprite sprite) {
-		super(id, sprite);
-		setSolidTo(true);
-		setDestroyableTo(true);
-		setDamagedTileTo(Tile.WALL_RUIN);
-	}
+    public Wall(int id, Sprite sprite) {
+	super(id, sprite);
+	setSolidTo(true);
+	setDestroyableTo(true);
+	setDamagedTileTo(Tile.WALL_RUIN);
+    }
 
 }
