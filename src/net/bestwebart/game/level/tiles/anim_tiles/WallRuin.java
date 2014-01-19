@@ -9,13 +9,13 @@ public class WallRuin extends AnimatedTile {
 	super(id, sprite, solid, transitionPeriod, frames);
 	setDestroyableTo(true);
 	setSolidTo(true);
-	currFrame = 1;
+	currFrame = 0;
     }
 
     public void update() {
 	if (currFrame >= framesNr - 1) {
 	    setSolidTo(false);
-	}
+	} 
     }
 
     public void nextSprite() {

@@ -20,7 +20,7 @@ public class Level {
     private int width, height;
     private BufferedImage image;
 
-    private List<Entity> entities = new ArrayList<Entity>();
+    private final List<Entity> entities = new ArrayList<Entity>();
 
     private int tiles[];
 
@@ -92,7 +92,7 @@ public class Level {
 	    } else {
 		AnimatedTile anTile = (AnimatedTile) getTile(tiles[x + y * width]);
 		anTile.nextFrame();
-		anTile.setCurrFrameTo(0);
+		anTile.update();
 	    }
 	}
 	// tiles[x + y * width][0] = tile.getID();
@@ -152,7 +152,7 @@ public class Level {
 	return false;
     }
 
-    private Comparator<Node> nodeSort = new Comparator<Node>() {
+    private final Comparator<Node> nodeSort = new Comparator<Node>() {
 	@Override
 	public int compare(Node n0, Node n1) {
 	    if (n0.fCost > n1.fCost) {
