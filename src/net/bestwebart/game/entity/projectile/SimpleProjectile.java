@@ -16,8 +16,8 @@ public class SimpleProjectile extends Projectile {
 	this.speed = 4;
 	this.rate = 20;
 
-	this.size = 8;
-	this.xOffset = this.yOffset = (16 - 8) / 2;
+	this.size = 0;
+	this.xOffset = this.yOffset = 10;
 
 	nx = speed * Math.cos(angle);
 	ny = speed * Math.sin(angle);
@@ -28,7 +28,6 @@ public class SimpleProjectile extends Projectile {
 	if (!Game.level.isTileCollision((int) (x + nx), (int) (y + ny), size, xOffset, yOffset)) {
 	    move();
 	} else {
-	    Game.level.changeTileAt((int) (x + nx) >> 4, (int) (y + ny) >> 4);
 	    remove();
 	    new Spawner((int) x + 8, (int) y + 8, 75, Type.PARTICLE);
 	    return;

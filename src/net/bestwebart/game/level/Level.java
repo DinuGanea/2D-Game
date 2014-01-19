@@ -145,6 +145,7 @@ public class Level {
 	    int xc = (x + corner % 2 * size + xOffset) >> 4;
 	    int yc = (y + corner / 2 * size + yOffset) >> 4;
 	    if (getTile(xc, yc).isSolid()) {
+		changeTileAt(xc, yc);
 		return true;
 	    }
 	}
