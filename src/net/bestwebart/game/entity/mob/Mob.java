@@ -94,10 +94,8 @@ public abstract class Mob extends Entity {
 	Game.level.addEntity(projectile);
     }
 
-    @Override
     public abstract void update();
 
-    @Override
     public abstract void render(Screen screen);
 
 }

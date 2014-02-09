@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
 
 import net.bestwebart.game.entity.Entity;
 import net.bestwebart.game.gfx.Screen;
-import net.bestwebart.game.level.tiles.AnimatedTile;
 import net.bestwebart.game.level.tiles.Tile;
 import net.bestwebart.game.util.Vector2i;
 
@@ -22,14 +21,14 @@ public class Level {
 
     private final List<Entity> entities = new ArrayList<Entity>();
 
-    private int tiles[];
+    private int tiles[][];
 
     public Level(String path) {
 	try {
 	    image = ImageIO.read(Level.class.getResource(path));
 	    width = image.getWidth();
 	    height = image.getHeight();
-	    tiles = new int[width * height];
+	    tiles = new int[width * height][2];
 	    loadLevelFromFile(path);
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -42,7 +41,7 @@ public class Level {
 
 	for (int y = 0; y < height; y++) {
 	    for (int x = 0; x < width; x++) {
-		tiles[x + y * width] = getTileByColor(tilesPixels[x + y * width]);
+		tiles[x + y * width][0] = getTileByColor(tilesPixels[x + y * width]);
 	    }
 	}
 
@@ -60,7 +59,7 @@ public class Level {
 	if (x < 0 || x >= width || y < 0 || y >= height) {
 	    return Tile.VOID;
 	}
-	return getTile(tiles[x + y * width]);
+	return getTile(tiles[x + y * width][0]);
     }
 
     public Tile getTile(int i) {
@@ -81,21 +80,21 @@ public class Level {
 	}
     }
 
-    public void changeTileAt(int x, int y) {
+    public void damageTile(int x, int y, int damage) {
 	if (x < 0 || x >= width || y < 0 || y >= height) {
 	    return;
 	}
-	if (getTile(tiles[x + y * width]).isSolid() && getTile(tiles[x + y * width]).canBeDamaged()) {
-	    if (!getTile(tiles[x + y * width]).isDamaged()) {
-		tiles[x + y * width] = getTile(tiles[x + y * width]).getDamageTile().getID();
-		getTile(tiles[x + y * width]).damage();
-	    } else {
-		AnimatedTile anTile = (AnimatedTile) getTile(tiles[x + y * width]);
-		anTile.nextFrame();
-		anTile.update();
+	if (getTile(tiles[x + y * width][0]).isSolid() && getTile(tiles[x + y * width][0]).canBeDamaged()) {
+	    tiles[x + y * width][1] += damage;
+	    if (getTile(tiles[x + y * width][0]).getMaxDamage() <= tiles[x + y * width][1]) {
+		changeTileAt(x, y, Tile.GRASS);
 	    }
 	}
-	// tiles[x + y * width][0] = tile.getID();
+    }
+    
+    public void changeTileAt(int x, int y, Tile newTile) {
+	tiles[x + y * width][0] = newTile.getID();
+	tiles[x + y * width][1] = 0;
     }
 
     public void update() {
@@ -120,9 +119,13 @@ public class Level {
 		if (x < 0 || x >= width || y < 0 || y >= height) {
 		    continue;
 		}
-		getTile(tiles[x + y * width]).render(x, y, screen);
+		getTile(tiles[x + y * width][0]).render(x, y, screen);
+		if (tiles[x + y * width][1] > 0) {
+		    screen.renderCracks(x << 4, y << 4, tiles[x + y * width][1]);
+		}
 	    }
 	}
+	
     }
 
     public void renderEntities(Screen screen) {
@@ -145,7 +148,7 @@ public class Level {
 	    int xc = (x + corner % 2 * size + xOffset) >> 4;
 	    int yc = (y + corner / 2 * size + yOffset) >> 4;
 	    if (getTile(xc, yc).isSolid()) {
-		changeTileAt(xc, yc);
+		damageTile(xc, yc, 10);
 		return true;
 	    }
 	}

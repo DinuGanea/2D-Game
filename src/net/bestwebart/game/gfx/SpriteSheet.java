@@ -14,6 +14,7 @@ public class SpriteSheet {
     public static final SpriteSheet TILES = new SpriteSheet("/sprites/tiles.png");
 
     public static final SpriteSheet WALL_RUIN = new SpriteSheet("/sprites/wall_ruines.png");
+    public static final SpriteSheet CRACKS = new SpriteSheet("/sprites/cracks.png");
 
     public static final SpriteSheet PLAYER = new SpriteSheet("/sprites/player.png");
     public static final SpriteSheet TONNY = new SpriteSheet("/sprites/tonny.png");

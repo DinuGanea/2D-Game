@@ -13,6 +13,7 @@ public class Sprite {
     public static final Sprite WALL = new Sprite(0, 1, SpriteSheet.TILES, 16);
 
     public static final Sprite WALL_RUIN = new Sprite(0, 0, SpriteSheet.WALL_RUIN, 1, 3, 16);
+    public static final Sprite CRACKS = new Sprite(0, 0, SpriteSheet.CRACKS, 1, 8, 16);
 
     public static final Sprite VOID = new Sprite(0x0066CC, 16);
 

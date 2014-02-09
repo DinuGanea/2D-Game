@@ -11,9 +11,9 @@ public abstract class Tile {
     protected int id;
     public Sprite sprite;
 
-    protected boolean solid = false, destroyable = false, damaged = false;
-    protected Tile tile_for_damage = null;
-
+    protected boolean solid = false, destroyable = false;
+    protected int maxDamage =0;
+    
     public static Tile tiles[] = new Tile[100];
 
     public static final Tile WALL_RUIN = new WallRuin(10, Sprite.WALL_RUIN, false, -1, 3);
@@ -78,21 +78,9 @@ public abstract class Tile {
     public void setDestroyableTo(boolean destroyable) {
 	this.destroyable = destroyable;
     }
-
-    public Tile getDamageTile() {
-	return tile_for_damage;
+    
+    public int getMaxDamage() {
+	return maxDamage;
     }
-
-    public void setDamagedTileTo(Tile damaged) {
-	this.tile_for_damage = damaged;
-    }
-
-    public void damage() {
-	damaged = true;
-    }
-
-    public boolean isDamaged() {
-	return damaged;
-    }
-
+    
 }

@@ -12,7 +12,7 @@ public class Player extends Mob {
     private MouseHandler mouse;
 
     public Player(KeyboardHandler key, MouseHandler mouse) {
-	super(400, 400, (AnimatedTile) Tile.PLAYER_UP);
+	super(0, 0, (AnimatedTile) Tile.PLAYER_UP);
 	this.key = key;
 	this.mouse = mouse;
 	speed = 1;

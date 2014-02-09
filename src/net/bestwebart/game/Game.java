@@ -34,15 +34,15 @@ public class Game extends Canvas implements Runnable {
 
     public static Level level;
 
-    private JFrame frame;
+    private final JFrame frame;
     private Thread thread;
-    private Screen screen;
-    private KeyboardHandler key;
-    private MouseHandler mouse;
-    private Player player;
+    private final Screen screen;
+    private final KeyboardHandler key;
+    private final MouseHandler mouse;
+    private final Player player;
 
-    private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-    private int pixels[] = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+    private final BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+    private final int pixels[] = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
     public Game() {
 	setPreferredSize(SIZE);
@@ -56,8 +56,8 @@ public class Game extends Canvas implements Runnable {
 
 	level.addEntity(player);
 
-	// level.addEntity(new Tonny(10, 10));
-	// level.addEntity(new BadTonny(240, 230));
+	//level.addEntity(new Tonny(10, 10));
+	//level.addEntity(new BadTonny(240, 230));
 
 	addKeyListener(key);
 	addMouseListener(mouse);
@@ -132,7 +132,7 @@ public class Game extends Canvas implements Runnable {
 	    return;
 	}
 	screen.clear();
-
+	
 	xScroll = (int) player.x - WIDTH / 2 + 16;
 	yScroll = (int) player.y - HEIGHT / 2 + 16;
 
@@ -150,6 +150,7 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	level.renderMap(xScroll, yScroll, screen);
+	
 	level.renderEntities(screen);
 
 	for (int i = 0; i < pixels.length; i++) {
