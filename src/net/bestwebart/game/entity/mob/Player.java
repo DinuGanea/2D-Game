@@ -1,5 +1,7 @@
 package net.bestwebart.game.entity.mob;
 
+import net.bestwebart.game.Game;
+import net.bestwebart.game.entity.particle.Step;
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.input.KeyboardHandler;
 import net.bestwebart.game.input.MouseHandler;
@@ -11,6 +13,11 @@ public class Player extends Mob {
     private KeyboardHandler key;
     private MouseHandler mouse;
 
+    private int points;
+    private int steps;
+    
+    private boolean step = false;
+
     public Player(KeyboardHandler key, MouseHandler mouse) {
 	super(0, 0, (AnimatedTile) Tile.PLAYER_UP);
 	this.key = key;
@@ -18,17 +25,31 @@ public class Player extends Mob {
 	speed = 1;
 	tileNr = 0;
 	shoots = 0;
+	invisible = true;
+	points = 100;
 	flip = false;
     }
 
-    @Override
     public void update() {
+	
+	if (key.invisible) {
+	    invisible = true;
+	} else {
+	    invisible = false;
+	}
 
 	if (shoots > 0) {
 	    shoots--;
 	}
 	updateShooting();
 
+	if (invisible) {
+	    if (steps > 0) {
+		steps--;
+	    }
+	    updateSteps();
+	}
+	
 	if (moving) {
 	    animTile.update();
 	}
@@ -75,7 +96,19 @@ public class Player extends Mob {
 	}
     }
 
-    @Override
+    private void updateSteps() {
+	if (steps <= 0) {
+	    if (step) {
+		Game.level.addEntity(new Step(x + 16, y + 28));
+		step = false;
+	    } else {
+		Game.level.addEntity(new Step(x + 11, y + 28));
+		step = true;
+	    }
+	    steps = 7;
+	}
+    }
+
     public void render(Screen screen) {
 	screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);
     }

@@ -33,7 +33,7 @@ public class Screen {
 		}
 	    }
 	}
-	
+
     }
 
     public void renderAnimatedTiles(int xPos, int yPos, Tile tile, boolean flip, int tileNr) {
@@ -49,6 +49,7 @@ public class Screen {
 		}
 		int col = tile.sprite.pixels[flipX + (y + tileNr * tile.sprite.SIZE) * tile.sprite.SIZE];
 		if (col != 0xffff00ff) {
+
 		    pixels[xp + yp * width] = col;
 		}
 	    }
@@ -57,26 +58,26 @@ public class Screen {
 
     // Only for test
     public void renderSprite(int xPos, int yPos, Sprite sprite) {
-	
-	for (int y = 0; y < 126; y++) {
+	for (int y = 0; y < 128; y++) {
 	    int yp = yPos + y;
-	    for (int x = 0; x < 16; x++) {
+	    for (int x = 0; x < 32; x++) {
 		int xp = xPos + x;
-		// if (xp < 0 || xp >= width || yp < 0 || yp >= height)
-		// continue;
-		pixels[xp + yp * width] = sprite.pixels[x + y * 16];
+		int col = sprite.pixels[x + y * 32];
+		if (col != 0xffff00ff) {
+		    pixels[xp + yp * width] = col;
+		}
 	    }
 	}
     }
-    
+
     public void renderCracks(int xPos, int yPos, int damage) {
 	xPos -= xOffset;
-	yPos -= yOffset;	
+	yPos -= yOffset;
 	int damageSprite = damage / 10;
 	if (damageSprite > 7) {
 	    damageSprite = 7;
 	}
-	
+
 	for (int y = 0; y < Sprite.CRACKS.SIZE; y++) {
 	    int yp = yPos + y;
 	    for (int x = 0; x < Sprite.CRACKS.SIZE; x++) {

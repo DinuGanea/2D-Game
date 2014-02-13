@@ -5,6 +5,8 @@ import java.util.Random;
 import net.bestwebart.game.gfx.Screen;
 
 public abstract class Entity {
+    
+    
 
     public double x, y;
     protected boolean removed;
@@ -20,6 +22,8 @@ public abstract class Entity {
     public boolean isRemoved() {
 	return removed;
     }
+    
+
 
     public void remove() {
 	removed = true;

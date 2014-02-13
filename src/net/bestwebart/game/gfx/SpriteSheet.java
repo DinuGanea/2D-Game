@@ -13,7 +13,6 @@ public class SpriteSheet {
 
     public static final SpriteSheet TILES = new SpriteSheet("/sprites/tiles.png");
 
-    public static final SpriteSheet WALL_RUIN = new SpriteSheet("/sprites/wall_ruines.png");
     public static final SpriteSheet CRACKS = new SpriteSheet("/sprites/cracks.png");
 
     public static final SpriteSheet PLAYER = new SpriteSheet("/sprites/player.png");
@@ -21,6 +20,8 @@ public class SpriteSheet {
     public static final SpriteSheet BAD_TONNY = new SpriteSheet("/sprites/bad_tonny.png");
 
     public static final SpriteSheet PROJECTILES = new SpriteSheet("/sprites/projectiles.png");
+    
+    public static final SpriteSheet SPECIAL_POWERS = new SpriteSheet("/sprites/s_powers.png");    
 
     public SpriteSheet(String path) {
 	this.path = path;

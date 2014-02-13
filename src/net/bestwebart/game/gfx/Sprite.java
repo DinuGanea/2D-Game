@@ -12,7 +12,6 @@ public class Sprite {
     public static final Sprite GRASS = new Sprite(0, 0, SpriteSheet.TILES, 16);
     public static final Sprite WALL = new Sprite(0, 1, SpriteSheet.TILES, 16);
 
-    public static final Sprite WALL_RUIN = new Sprite(0, 0, SpriteSheet.WALL_RUIN, 1, 3, 16);
     public static final Sprite CRACKS = new Sprite(0, 0, SpriteSheet.CRACKS, 1, 8, 16);
 
     public static final Sprite VOID = new Sprite(0x0066CC, 16);
@@ -31,7 +30,11 @@ public class Sprite {
 
     public static final Sprite SIMPLE_PROJECTILE = new Sprite(0, 0, SpriteSheet.PROJECTILES, 16);
 
-    public static final Sprite PARTICLE = new Sprite(0xFFFFFF, 2);
+    public static final Sprite PARTICLE = new Sprite(0x000000, 2);
+    
+    public static final Sprite SPECIAL_POWERS = new Sprite(0, 0, SpriteSheet.SPECIAL_POWERS, 1, 4, 32);
+    
+    
 
     public Sprite(int x, int y, SpriteSheet sheet, int size) {
 	this.SIZE = size;
@@ -71,15 +74,24 @@ public class Sprite {
 	for (int h = 0; h < height; h++) {
 	    for (int w = 0; w < width; w++) {
 		for (int y = 0; y < SIZE; y++) {
-		    int xStart = this.x + w * SIZE;
+		    
 		    int yStart = this.y + h * SIZE;
-		    int x0 = w * SIZE;
+		    int xStart = this.x + w * SIZE;
+		    
 		    int y0 = h * SIZE;
+		    int x0 = w * SIZE;
+		    
+
+		    
 		    for (int x = 0; x < SIZE; x++) {
-			pixels[(x + x0) + (y + y0) * (width * SIZE)] = sheet.pixels[(xStart + x) + (yStart + y) * sheet.width];
+			    if (width == 4) {
+			//	System.out.println((x0 + x) + " " + ((y0 + y) * (width * SIZE)) + " ->>>" + (xStart + x) + " " + ((yStart + y) * sheet.width));
+			    }
+			pixels[(x0 + x) + (y0 + y) * (width * SIZE)] = sheet.pixels[(xStart + x) + (yStart + y) * sheet.width];
 		    }
 		}
 	    }
 	}
+
     }
 }

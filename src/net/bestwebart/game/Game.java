@@ -79,7 +79,7 @@ public class Game extends Canvas implements Runnable {
 	}
     }
 
-    @Override
+
     public void run() {
 	long lastTime = System.nanoTime();
 	long now = 0l;
@@ -132,7 +132,7 @@ public class Game extends Canvas implements Runnable {
 	    return;
 	}
 	screen.clear();
-	
+
 	xScroll = (int) player.x - WIDTH / 2 + 16;
 	yScroll = (int) player.y - HEIGHT / 2 + 16;
 
@@ -150,8 +150,9 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	level.renderMap(xScroll, yScroll, screen);
-	
+
 	level.renderEntities(screen);
+	
 
 	for (int i = 0; i < pixels.length; i++) {
 	    pixels[i] = screen.pixels[i];
@@ -160,7 +161,6 @@ public class Game extends Canvas implements Runnable {
 	Graphics g = bs.getDrawGraphics();
 	g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 	g.dispose();
-
 	bs.show();
 
     }

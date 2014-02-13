@@ -2,7 +2,6 @@ package net.bestwebart.game.level.tiles;
 
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.gfx.Sprite;
-import net.bestwebart.game.level.tiles.anim_tiles.WallRuin;
 import net.bestwebart.game.level.tiles.static_tiles.Grass;
 import net.bestwebart.game.level.tiles.static_tiles.Wall;
 
@@ -16,8 +15,7 @@ public abstract class Tile {
     
     public static Tile tiles[] = new Tile[100];
 
-    public static final Tile WALL_RUIN = new WallRuin(10, Sprite.WALL_RUIN, false, -1, 3);
-
+   
     public static final Tile VOID = new StaticTile(0, Sprite.VOID);
     public static final Tile GRASS = new Grass(1, Sprite.GRASS);
     public static final Tile WALL = new Wall(2, Sprite.WALL);

@@ -10,6 +10,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import net.bestwebart.game.entity.Entity;
+import net.bestwebart.game.entity.mob.Mob;
+import net.bestwebart.game.entity.mob.Player;
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.level.tiles.Tile;
 import net.bestwebart.game.util.Vector2i;
@@ -18,6 +20,7 @@ public class Level {
 
     private int width, height;
     private BufferedImage image;
+    
 
     private final List<Entity> entities = new ArrayList<Entity>();
 
@@ -130,7 +133,11 @@ public class Level {
 
     public void renderEntities(Screen screen) {
 	for (int i = 0; i < entities.size(); i++) {
-	    entities.get(i).render(screen);
+	    if (entities.get(i) instanceof Player && ((Mob) entities.get(i)).isInvisible()) {
+		//entities.get(i).render(screen);
+	    } else {
+		entities.get(i).render(screen);
+	    }
 	}
     }
 
@@ -148,7 +155,7 @@ public class Level {
 	    int xc = (x + corner % 2 * size + xOffset) >> 4;
 	    int yc = (y + corner / 2 * size + yOffset) >> 4;
 	    if (getTile(xc, yc).isSolid()) {
-		damageTile(xc, yc, 10);
+		damageTile(xc, yc, 30);
 		return true;
 	    }
 	}
@@ -157,7 +164,6 @@ public class Level {
     }
 
     private final Comparator<Node> nodeSort = new Comparator<Node>() {
-	@Override
 	public int compare(Node n0, Node n1) {
 	    if (n0.fCost > n1.fCost) {
 		return 1;
@@ -176,7 +182,15 @@ public class Level {
 
 	Node current = new Node(start, null, 0, start.getDistance(finish));
 	openList.add(current);
+	
+	int iterations = 0;
+	
 	while (openList.size() > 0) {
+	    if (iterations > 100) {
+		break;
+	    } 
+	    
+	    iterations++;
 	    Collections.sort(openList, nodeSort);
 	    current = openList.get(0);
 	    openList.remove(current);

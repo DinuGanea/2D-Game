@@ -9,6 +9,10 @@ import net.bestwebart.game.input.MouseHandler;
 import net.bestwebart.game.level.tiles.AnimatedTile;
 
 public abstract class Mob extends Entity {
+    
+    
+    protected boolean invisible;
+    
 
     protected double speed;
     protected boolean moving;
@@ -92,6 +96,10 @@ public abstract class Mob extends Entity {
 
 	projectile = new SimpleProjectile(x, y, angle);
 	Game.level.addEntity(projectile);
+    }
+    
+    public boolean isInvisible() {
+	return invisible;
     }
 
     public abstract void update();
