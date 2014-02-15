@@ -28,9 +28,15 @@ public class BadTonny extends Mob {
 
     }
 
-    @Override
     public void update() {
-
+	
+	if (Game.level.getPlayer().isInvisible()) {
+	    tileNr = 0;
+	    animTile.setCurrFrameTo(0);
+	    return;
+	}
+	
+	
 	double nx = 0d, ny = 0d;
 	if (time > 10000) {
 	    time = 0;
@@ -98,6 +104,7 @@ public class BadTonny extends Mob {
 	    tileNr = 0;
 	    animTile.setCurrFrameTo(0);
 	} else {
+
 	    move(nx, ny);
 	}
     }
@@ -115,7 +122,6 @@ public class BadTonny extends Mob {
 	}
 	return collision;
     }
-
 
     public void render(Screen screen) {
 	screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);

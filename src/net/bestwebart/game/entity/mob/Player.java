@@ -25,7 +25,6 @@ public class Player extends Mob {
 	speed = 1;
 	tileNr = 0;
 	shoots = 0;
-	invisible = true;
 	points = 100;
 	flip = false;
     }
@@ -107,6 +106,10 @@ public class Player extends Mob {
 	    }
 	    steps = 7;
 	}
+    }
+    
+    public boolean isInvisible() {
+	return invisible;
     }
 
     public void render(Screen screen) {

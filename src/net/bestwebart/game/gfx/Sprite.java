@@ -31,6 +31,7 @@ public class Sprite {
     public static final Sprite SIMPLE_PROJECTILE = new Sprite(0, 0, SpriteSheet.PROJECTILES, 16);
 
     public static final Sprite PARTICLE = new Sprite(0x000000, 2);
+    public static final Sprite BLOOD = new Sprite(0xaf111c, 1);
     
     public static final Sprite SPECIAL_POWERS = new Sprite(0, 0, SpriteSheet.SPECIAL_POWERS, 1, 4, 32);
     
@@ -81,12 +82,7 @@ public class Sprite {
 		    int y0 = h * SIZE;
 		    int x0 = w * SIZE;
 		    
-
-		    
 		    for (int x = 0; x < SIZE; x++) {
-			    if (width == 4) {
-			//	System.out.println((x0 + x) + " " + ((y0 + y) * (width * SIZE)) + " ->>>" + (xStart + x) + " " + ((yStart + y) * sheet.width));
-			    }
 			pixels[(x0 + x) + (y0 + y) * (width * SIZE)] = sheet.pixels[(xStart + x) + (yStart + y) * sheet.width];
 		    }
 		}

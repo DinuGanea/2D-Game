@@ -25,12 +25,19 @@ public class SimpleProjectile extends Projectile {
     }
 
     public void update() {
-	if (!Game.level.isTileCollision((int) (x + nx), (int) (y + ny), size, xOffset, yOffset)) {
-	    move();
-	} else {
-	    remove();
-	    new Spawner((int) x + 8, (int) y + 8, 75, Type.PARTICLE);
-	    return;
+	int col_code = Game.level.isShootCollision((int) (x + nx), (int) (y + ny), size, xOffset, yOffset);
+	switch (col_code) {
+	    case 0:
+		move();
+		break;
+	    case 1:
+		remove();
+		new Spawner((int) x + 8, (int) y + 8, 75, Type.PARTICLE);
+		break;
+	    case 2: 
+		remove();
+		new Spawner((int) x + 8, (int) y + 8, 75, Type.BLOOD);
+		break;
 	}
     }
 

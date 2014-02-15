@@ -16,7 +16,6 @@ public class Tonny extends Mob {
 	time = 0;
     }
 
-    @Override
     public void update() {
 	time = (time > 1000000000) ? 0 : time + 1;
 
@@ -63,7 +62,6 @@ public class Tonny extends Mob {
 
     }
 
-    @Override
     public void render(Screen screen) {
 	screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);
     }

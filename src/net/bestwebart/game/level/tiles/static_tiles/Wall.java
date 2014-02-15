@@ -7,8 +7,8 @@ public class Wall extends StaticTile {
 
     public Wall(int id, Sprite sprite) {
 	super(id, sprite);
-	setSolidTo(true);
-	setDestroyableTo(true);
+	solid = true;
+	destroyable = true;
 	maxDamage = 100;
     }
 

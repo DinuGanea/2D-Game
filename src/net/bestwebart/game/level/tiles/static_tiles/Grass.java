@@ -7,6 +7,7 @@ public class Grass extends StaticTile {
 
     public Grass(int id, Sprite sprite) {
 	super(id, sprite);
+	solid = false;
     }
 
 }
