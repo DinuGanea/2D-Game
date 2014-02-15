@@ -31,7 +31,7 @@ public class Sprite {
     public static final Sprite SIMPLE_PROJECTILE = new Sprite(0, 0, SpriteSheet.PROJECTILES, 16);
 
     public static final Sprite PARTICLE = new Sprite(0x000000, 2);
-    public static final Sprite BLOOD = new Sprite(0xaf111c, 1);
+    public static final Sprite BLOOD = new Sprite(0xAF111C, 2);
     
     public static final Sprite SPECIAL_POWERS = new Sprite(0, 0, SpriteSheet.SPECIAL_POWERS, 1, 4, 32);
     

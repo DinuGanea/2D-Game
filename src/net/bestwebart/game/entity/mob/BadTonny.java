@@ -7,6 +7,8 @@ import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.level.Node;
 import net.bestwebart.game.level.tiles.AnimatedTile;
 import net.bestwebart.game.level.tiles.Tile;
+import net.bestwebart.game.spawner.Spawner;
+import net.bestwebart.game.spawner.Spawner.Type;
 import net.bestwebart.game.util.Vector2i;
 
 public class BadTonny extends Mob {
@@ -17,7 +19,7 @@ public class BadTonny extends Mob {
     private double tlx, tly;
     private int tile_step, mob_steps;
 
-    public BadTonny(int x, int y) {
+    public BadTonny(int x, int y, int life) {
 	super(x, y, (AnimatedTile) Tile.BAD_TONNY_UP);
 	speed = 1;
 	tileNr = 0;
@@ -25,7 +27,7 @@ public class BadTonny extends Mob {
 	tlx = tly = 0;
 	tile_step = 1;
 	mob_steps = 1;
-
+	hp = life;
     }
 
     public void update() {
@@ -34,6 +36,11 @@ public class BadTonny extends Mob {
 	    tileNr = 0;
 	    animTile.setCurrFrameTo(0);
 	    return;
+	}
+	
+	if (hp <= 0) {
+	    new Spawner((int) x + 16, (int) y + 16, 1000, Type.BLOOD);
+	    this.remove();
 	}
 	
 	

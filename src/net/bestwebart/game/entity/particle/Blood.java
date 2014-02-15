@@ -25,9 +25,9 @@ public class Blood extends Particle {
 	    zd -= 0.1;
 	    if (z < 0) {
 		z = -0.5;
-		zd *= 0.1;
-		xd *= 0.1;
-		yd *= 0.1;
+		zd *= 0.9;
+		xd *= 0.9;
+		yd *= 0.9;
 	    }
 	    move((x + xd), (y + yd) + (z + zd));
 	}
@@ -35,9 +35,9 @@ public class Blood extends Particle {
 
     public void move(double nx, double ny) {
 	if (isCollision(nx, ny)) {
-	    xd *= -0.1;
-	    yd *= -0.1;
-	    zd *= -0.1;
+	    xd *= -0.9;
+	    yd *= -0.9;
+	    zd *= -0.9;
 	} else {
 	    x += xd;
 	    y += yd;

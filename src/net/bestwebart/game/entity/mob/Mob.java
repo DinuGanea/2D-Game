@@ -23,6 +23,7 @@ public abstract class Mob extends Entity {
 
     protected int shoots;
     protected double angle;
+    protected int hp;
 
     protected AnimatedTile animTile;
     protected Projectile projectile;
@@ -71,6 +72,10 @@ public abstract class Mob extends Entity {
 	    }
 	}
     }
+    
+    public void decreaseDamage(int points) {
+	this.hp -= points;
+    }
 
     public boolean isCollision(double x, double y) {
 	boolean collision = false;
@@ -98,6 +103,7 @@ public abstract class Mob extends Entity {
 	Game.level.addEntity(projectile);
     }
     
+    
     public boolean isInvisible() {
 	return invisible;
     }
@@ -105,5 +111,7 @@ public abstract class Mob extends Entity {
     public abstract void update();
 
     public abstract void render(Screen screen);
+    
+
 
 }

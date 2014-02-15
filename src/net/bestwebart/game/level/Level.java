@@ -188,6 +188,7 @@ public class Level {
 	    int mx = (int) mobs.get(i).x;
 	    int my = (int) mobs.get(i).y;
 	    if (x > mx + 10 && x < mx + 20 && y > my - 5 && y < my + 30) {
+		mobs.get(i).decreaseDamage(10);
 		return true;
 	    }
 	}

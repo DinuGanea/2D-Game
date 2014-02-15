@@ -3,17 +3,20 @@ package net.bestwebart.game.entity.mob;
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.level.tiles.AnimatedTile;
 import net.bestwebart.game.level.tiles.Tile;
+import net.bestwebart.game.spawner.Spawner;
+import net.bestwebart.game.spawner.Spawner.Type;
 
 public class Tonny extends Mob {
 
     private long time;
     private double nx, ny;
 
-    public Tonny(int x, int y) {
+    public Tonny(int x, int y, int life) {
 	super(x, y, (AnimatedTile) Tile.TONNY_UP);
 	speed = 1;
 	tileNr = 0;
 	time = 0;
+	hp = life;
     }
 
     public void update() {
@@ -21,7 +24,12 @@ public class Tonny extends Mob {
 
 	animTile.update();
 	tileNr = animTile.getCurrFrame();
-
+	
+	if (hp <= 0) {
+	    new Spawner((int) x + 16, (int) y + 16, 1000, Type.BLOOD);
+	    this.remove();
+	}
+	
 	if (time % 60 == 0) {
 	    nx = (rand.nextInt(3) - 1) * speed;
 	    ny = (rand.nextInt(3) - 1) * speed;
