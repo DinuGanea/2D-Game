@@ -17,14 +17,14 @@ public class AnimatedTile extends Tile {
 	framesNr = frames;
     }
 
-    public void update() {
+    public synchronized void update() {
 	if (System.currentTimeMillis() - lTransitionTime >= transitionPeriod) {
 	    currFrame = (currFrame >= framesNr - 1) ? 0 : currFrame + 1;
 	    lTransitionTime = System.currentTimeMillis();
 	}
     }
 
-    public void render(int x, int y, Screen screen) {
+    public synchronized void render(int x, int y, Screen screen) {
 	screen.renderAnimatedTiles(x << 4, y << 4, this, false, currFrame);
     }
 

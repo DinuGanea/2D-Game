@@ -11,17 +11,20 @@ import javax.imageio.ImageIO;
 
 import net.bestwebart.game.entity.Entity;
 import net.bestwebart.game.entity.mob.Mob;
+import net.bestwebart.game.entity.mob.Player;
+import net.bestwebart.game.entity.mob.PlayerMP;
 import net.bestwebart.game.entity.particle.Particle;
 import net.bestwebart.game.entity.projectile.Projectile;
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.level.tiles.Tile;
+import net.bestwebart.game.spawner.Spawner;
+import net.bestwebart.game.spawner.Spawner.Type;
 import net.bestwebart.game.util.Vector2i;
 
 public class Level {
 
     private int width, height;
     private BufferedImage image;
-    
 
     private final List<Mob> mobs = new ArrayList<Mob>();
     private final List<Particle> particles = new ArrayList<Particle>();
@@ -97,29 +100,30 @@ public class Level {
 	    }
 	}
     }
-    
+
     public void changeTileAt(int x, int y, Tile newTile) {
+	new Spawner((x << 4) + 8, (y << 4) + 8, 300, Type.PARTICLE);
 	tiles[x + y * width][0] = newTile.getID();
 	tiles[x + y * width][1] = 0;
     }
 
-    public void update() {
+    public synchronized void update() {	
 	for (int i = 0; i < mobs.size(); i++) {
-	    if (!mobs.get(i).isRemoved()) {
+	    if (!mobs.get(i).isRemoved() && mobs.get(i) != null) {
 		mobs.get(i).update();
 	    } else {
 		mobs.remove(i);
 	    }
 	}
-	
+
 	for (int i = 0; i < particles.size(); i++) {
 	    if (!particles.get(i).isRemoved()) {
 		particles.get(i).update();
 	    } else {
 		particles.remove(i);
 	    }
-	}	
-	
+	}
+
 	for (int i = 0; i < projectiles.size(); i++) {
 	    if (!projectiles.get(i).isRemoved()) {
 		projectiles.get(i).update();
@@ -129,7 +133,7 @@ public class Level {
 	}
     }
 
-    public void renderMap(int xScroll, int yScroll, Screen screen) {
+    public synchronized void renderMap(int xScroll, int yScroll, Screen screen) {
 	screen.setOffset(xScroll, yScroll);
 	int x0 = xScroll >> 4;
 	int x1 = (xScroll + screen.width + 16) >> 4;
@@ -147,25 +151,25 @@ public class Level {
 		}
 	    }
 	}
-	
+
     }
 
-    public void renderEntities(Screen screen) {
-	
+    public synchronized void renderEntities(Screen screen) {
+
 	for (Particle particle : particles) {
 	    particle.render(screen);
-	}	
-	
+	}
+
 	for (Projectile projectile : projectiles) {
 	    projectile.render(screen);
 	}
-	
+
 	for (Mob mob : mobs) {
 	    if (!mob.isInvisible()) {
 		mob.render(screen);
 	    }
 	}
-	
+
     }
 
     public void addEntity(Entity e) {
@@ -176,38 +180,51 @@ public class Level {
 	} else if (e instanceof Projectile) {
 	    projectiles.add((Projectile) e);
 	}
+	
     }
 
     public Mob getPlayer() {
-	return mobs.get(0);
+	for (Mob mob : mobs) {
+	    if (mob instanceof Player) {
+		return mob;
+	    }
+	}
+	return null;
     }
     
-    
-    public boolean isMobCollision(int x, int y) {
-	for (int i = 1; i < mobs.size(); i++) {
-	    int mx = (int) mobs.get(i).x;
-	    int my = (int) mobs.get(i).y;
-	    if (x > mx + 10 && x < mx + 20 && y > my - 5 && y < my + 30) {
-		mobs.get(i).decreaseDamage(10);
-		return true;
+    public Mob getMob(int uniqueID) {
+	for (Mob mob : mobs) {
+	    if (!mob.isInvisible() && mob.getUniqueID() != uniqueID) {
+		return mob;
+	    }
+	}
+	return null;
+    }
+
+    public boolean isMobCollision(int x, int y, Projectile projectile) {
+	for (int i = 0; i < mobs.size(); i++) {
+	    if (mobs.get(i) != null && mobs.get(i).getUniqueID() != projectile.getSource().getUniqueID()) {
+		int mx = (int) mobs.get(i).getX();
+		int my = (int) mobs.get(i).getY();
+		if (x > mx + 10 && x < mx + 20 && y > my - 5 && y < my + 30) {
+		    mobs.get(i).decreaseDamage(projectile.getPower());
+		    return true;
+		}
 	    }
 	}
 	return false;
     }
-    
-    
 
-    // UNFINISHED
-    public int isShootCollision(int x, int y, int size, int xOffset, int yOffset) {
-	if (isMobCollision(x, y)) {
-		return 2;
+    public int isShootCollision(int x, int y, int size, int xOffset, int yOffset, Projectile projectile) {
+	if (isMobCollision(x, y, projectile)) {
+	    return 2;
 	}
-	
+
 	for (int corner = 0; corner < 4; corner++) {
 	    int xc = (x + corner % 2 * size + xOffset) >> 4;
 	    int yc = (y + corner / 2 * size + yOffset) >> 4;
 	    if (getTile(xc, yc).isSolid()) {
-		damageTile(xc, yc, 30);
+		damageTile(xc, yc, projectile.getPower());
 		return 1;
 	    }
 	}
@@ -234,14 +251,14 @@ public class Level {
 
 	Node current = new Node(start, null, 0, start.getDistance(finish));
 	openList.add(current);
-	
+
 	int iterations = 0;
-	
+
 	while (openList.size() > 0) {
 	    if (iterations > 100) {
 		break;
-	    } 
-	    
+	    }
+
 	    iterations++;
 	    Collections.sort(openList, nodeSort);
 	    current = openList.get(0);
@@ -307,4 +324,46 @@ public class Level {
 	return null;
     }
 
+    public void removePlayerMP(String username) {
+	for (int i = 0; i < mobs.size(); i++) {
+	    if ((mobs.get(i) instanceof PlayerMP) && ((PlayerMP) mobs.get(i)).getUsername().equalsIgnoreCase(username)) {
+		mobs.remove(i);
+		return;
+	    }
+	}
+    }
+
+    public void moveMob(int uniqueID, int x, int y, int dir, boolean moving) {
+	for (Mob m : mobs) {
+	    if (m.getUniqueID() == uniqueID) {
+		m.setX(x);
+		m.setY(y);
+		m.setDir(dir);
+		m.setMoving(moving);
+		return;
+	    }
+	}
+    }
+    
+    public Mob getMobByHashCode(int uniqueID) {
+	for (Mob m : mobs) {
+	    if (m.getUniqueID() == uniqueID) {
+		return m;
+	    }
+	}
+	return null;
+    }
+    
+    public int[][] getTiles() {
+	return tiles;
+    }
+    
+    public void setTiles(int[][] tiles) {
+	this.tiles = tiles;
+    }
+    
+    public List<Mob> getMobs() {
+	return mobs;
+    }
+    
 }

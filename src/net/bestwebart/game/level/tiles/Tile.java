@@ -38,18 +38,26 @@ public abstract class Tile {
 
     public static final Tile PARTICLE = new StaticTile(70, Sprite.PARTICLE);
     public static final Tile BLOOD = new StaticTile(71, Sprite.BLOOD);
+    public static final Tile SPARK = new StaticTile(72, Sprite.SPARK);
+    
+    public static final Tile HEART = new Wall(90, Sprite.HEART);
 
     public static final int GRASS_COL = 0xff00ff00;
     public static final int WALL_COL = 0xff151f25;
 
     public Tile(int id, Sprite sprite, boolean solid) {
 	this.id = id;
-	if (tiles[id] != null) {
-	    throw new RuntimeException("Duplicated tile:" + this + " at position:" + id);
+	
+	if (id != -1) {
+	    if (tiles[id] != null) {
+		throw new RuntimeException("Duplicated tile: " + this + " at position:" + id);
+	    }
+	    tiles[id] = this;
 	}
+	
 	this.sprite = sprite;
 	this.solid = solid;
-	tiles[id] = this;
+	
     }
 
     public int getID() {

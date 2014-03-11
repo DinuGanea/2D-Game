@@ -1,27 +1,40 @@
 package net.bestwebart.game;
 
+import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.HeadlessException;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import net.bestwebart.game.entity.mob.BadTonny;
+import net.bestwebart.game.entity.mob.Mob;
+import net.bestwebart.game.entity.mob.Mob.MobType;
 import net.bestwebart.game.entity.mob.Player;
+import net.bestwebart.game.entity.mob.PlayerMP;
 import net.bestwebart.game.entity.mob.Tonny;
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.input.KeyboardHandler;
 import net.bestwebart.game.input.MouseHandler;
+import net.bestwebart.game.input.WindowHandler;
 import net.bestwebart.game.level.Level;
+import net.bestwebart.game.net.Client;
+import net.bestwebart.game.net.Server;
+import net.bestwebart.game.net.packets.Packet00Login;
+import net.bestwebart.game.net.packets.Packet05AddNPC;
 
 public class Game extends Canvas implements Runnable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int WIDTH = 600;
+    public static final int WIDTH = 500;
     public static final int HEIGHT = WIDTH / 16 * 9;
     public static final int SCALE = 2;
 
@@ -34,14 +47,21 @@ public class Game extends Canvas implements Runnable {
 
     private static int xScroll, yScroll;
 
+    public static Graphics g;
     public static Level level;
+    public static Game game;
 
     private final JFrame frame;
     private Thread thread;
     private final Screen screen;
-    private final KeyboardHandler key;
-    private final MouseHandler mouse;
-    private final Player player;
+
+    public Player player;
+    public KeyboardHandler key;
+    public MouseHandler mouse;
+    public WindowHandler window;
+
+    public Client client;
+    public Server server;
 
     private final BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     private final int pixels[] = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
@@ -49,24 +69,66 @@ public class Game extends Canvas implements Runnable {
     public Game() {
 	setPreferredSize(SIZE);
 
+	game = this;
 	frame = new JFrame(NAME);
 	screen = new Screen(WIDTH, HEIGHT);
 	level = new Level("/levels/test.png");
 	key = new KeyboardHandler();
 	mouse = new MouseHandler();
-	player = new Player(key, mouse);
+	window = new WindowHandler(this);
 
+	int run_server = JOptionPane.showConfirmDialog(null, "Run the server ? ");
+	if (run_server == 0) {
+	    server = new Server(this);
+	    client = new Client(this, "localhost");
+	    client.start();
+	} else if (run_server == 1) {
+	    try {
+		client = new Client(this, JOptionPane.showInputDialog(null, "Enter IP: "));
+		client.start();
+	    } catch (HeadlessException e) {
+		e.printStackTrace();
+	    } catch (NumberFormatException e) {
+		e.printStackTrace();
+	    }
+
+	} else {
+	    level.addEntity(new Tonny(200, 100, 100));
+	    level.addEntity(new BadTonny(240, 200, 100));
+	}
+
+	String username = JOptionPane.showInputDialog(null, "Enter Username:");
+	if (username.trim() == "") {
+	    username = "Player";
+	}
+
+	player = new PlayerMP(10, 10, username, key, mouse, null, -1);
 	level.addEntity(player);
+	Packet00Login packet = new Packet00Login(player.getUsername(), player.getX(), player.getY(), player.getHP(), player.getUniqueID());
+	packet.writeData(client);
+	
+	
+	if (server != null) {
+	    server.addConnections((PlayerMP) player, packet);
+	    server.start();
+	    Tonny tonny = new Tonny(100, 100, 100);
+	    Packet05AddNPC packetNPC = new Packet05AddNPC((int)tonny.getX(), (int)tonny.getY(), tonny.getHP(), tonny.getUniqueID(), MobType.TONNY.getID());
+	    packetNPC.writeData(client);
+	    
+	    BadTonny bad_tonny = new BadTonny(170, 200, 100);
+	    packetNPC = new Packet05AddNPC((int)bad_tonny.getX(), (int)bad_tonny.getY(), bad_tonny.getHP(), bad_tonny.getUniqueID(), MobType.BAD_TONNY.getID());
+	    packetNPC.writeData(client);
+	}
 
-	level.addEntity(new Tonny(200, 100, 50));
-	level.addEntity(new BadTonny(240, 230, 100));
 
 	addKeyListener(key);
 	addMouseListener(mouse);
 	addMouseMotionListener(mouse);
+	frame.addWindowListener(window);
     }
 
     public synchronized void start() {
+
 	running = true;
 	thread = new Thread(this, "main");
 	thread.start();
@@ -80,7 +142,6 @@ public class Game extends Canvas implements Runnable {
 	    e.printStackTrace();
 	}
     }
-
 
     public void run() {
 	long lastTime = System.nanoTime();
@@ -124,7 +185,9 @@ public class Game extends Canvas implements Runnable {
 
     private void update() {
 	key.update();
-	level.update();
+	if (!key.pause && !key.menu) {
+	    level.update();
+	}
     }
 
     private void render() {
@@ -133,10 +196,11 @@ public class Game extends Canvas implements Runnable {
 	    createBufferStrategy(3);
 	    return;
 	}
+
 	screen.clear();
 
-	xScroll = (int) player.x - WIDTH / 2 + 16;
-	yScroll = (int) player.y - HEIGHT / 2 + 16;
+	xScroll = (int) ((Mob) player).getX() - WIDTH / 2 + 16;
+	yScroll = (int) ((Mob) player).getY() - HEIGHT / 2 + 16;
 
 	if (xScroll < 0) {
 	    xScroll = 0;
@@ -151,20 +215,42 @@ public class Game extends Canvas implements Runnable {
 	    yScroll = level.getLevelHeight() - HEIGHT;
 	}
 
-	level.renderMap(xScroll, yScroll, screen);
+	g = bs.getDrawGraphics();
+	g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 
+	level.renderMap(xScroll, yScroll, screen);
 	level.renderEntities(screen);
-	
 
 	for (int i = 0; i < pixels.length; i++) {
 	    pixels[i] = screen.pixels[i];
 	}
 
-	Graphics g = bs.getDrawGraphics();
-	g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+	screen.renderBar(10, 10, g);
+
+	if (key.pause) {
+	    Color mask = new Color(0x99000000, true);
+	    g.setColor(mask);
+	    g.fillRect(0, 0, Game.getWindowWidth(), Game.getWindowHeight());
+
+	    g.setColor(Color.white);
+	    g.setFont(new Font("Arial", Font.PLAIN, 20));
+
+	    g.drawString("PAUSE", Game.getWindowWidth() / 2 - 40, Game.getWindowHeight() / 2 - 10);
+	} else if (key.menu) {
+
+	    // menu.setVisible(true);
+
+	} else {
+
+	}
+
 	g.dispose();
 	bs.show();
 
+    }
+
+    public Level getLevel() {
+	return level;
     }
 
     public static int getWindowWidth() {
@@ -187,11 +273,27 @@ public class Game extends Canvas implements Runnable {
 	return yScroll;
     }
 
+    public Player getPlayer() {
+	return player;
+    }
+
+    // public static JPanel menu = new JPanel();
+
     public static void main(String[] args) {
 	Game game = new Game();
-	game.frame.setResizable(false);
+	game.frame.setResizable(true);
 	game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	game.frame.add(game);
+	game.frame.setLayout(new BorderLayout());
+	game.frame.add(game, BorderLayout.CENTER);
+
+	// Menu TEST
+	/*
+	 * menu.setLayout(new GridLayout(1, 4)); menu.add(new
+	 * JButton("Button 1")); menu.add(new JButton("Button 2")); menu.add(new
+	 * JButton("Button 3")); menu.add(new JButton("Button 4"));
+	 * game.frame.add(menu, BorderLayout.SOUTH); menu.setVisible(false);
+	 */
+
 	game.frame.pack();
 	game.frame.setVisible(true);
 	// game.frame.setUndecorated(true);

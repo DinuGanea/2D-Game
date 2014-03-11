@@ -1,7 +1,12 @@
 package net.bestwebart.game.gfx;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.util.Arrays;
 
+import net.bestwebart.game.Game;
+import net.bestwebart.game.entity.mob.Player;
 import net.bestwebart.game.level.tiles.Tile;
 
 public class Screen {
@@ -58,11 +63,11 @@ public class Screen {
 
     // Only for test
     public void renderSprite(int xPos, int yPos, Sprite sprite) {
-	for (int y = 0; y < 128; y++) {
+	for (int y = 0; y < 16; y++) {
 	    int yp = yPos + y;
-	    for (int x = 0; x < 32; x++) {
+	    for (int x = 0; x < 16; x++) {
 		int xp = xPos + x;
-		int col = sprite.pixels[x + y * 32];
+		int col = sprite.pixels[x + y * 16];
 		if (col != 0xffff00ff) {
 		    pixels[xp + yp * width] = col;
 		}
@@ -91,6 +96,39 @@ public class Screen {
 		}
 	    }
 	}
+    }
+
+    public void renderBar(int xPos, int yPos, Graphics g) {
+	Player p = (Player) Game.level.getPlayer();
+	if (p != null) {
+
+	    if (p.getHP() > 0) {
+		int pHP = Game.level.getPlayer().getHP();
+
+		Color col = new Color(0x99C9C9C9, true);
+		g.drawRect(xPos, yPos, 100, 10);
+		col = new Color(0xAAFF0000, true);
+		g.setColor(col);
+		g.fillRect(xPos, yPos, pHP, 11);
+	    }
+
+	} else {
+	    Color mask = new Color(0x99000000, true);
+	    g.setColor(mask);
+	    g.fillRect(0, 0, Game.getWindowWidth(), Game.getWindowHeight());
+
+	    g.setColor(Color.red);
+	    g.setFont(new Font("Arial", Font.PLAIN, 20));
+
+	    g.drawString("GAME OVER!", Game.getWindowWidth() / 2 - 40, Game.getWindowHeight() / 2 - 10);
+	}
+
+    }
+
+    public void renderText(String txt, int x, int y, Font font, Color color) {
+	Game.g.setColor(color);
+	Game.g.setFont(font);
+	Game.g.drawString(txt, x, y);
     }
 
     public void setOffset(int xOffset, int yOffset) {

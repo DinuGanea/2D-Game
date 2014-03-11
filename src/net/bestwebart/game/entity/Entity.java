@@ -8,7 +8,7 @@ public abstract class Entity {
     
     
 
-    public double x, y;
+    protected double x, y;
     protected boolean removed;
 
     protected static Random rand = new Random();
@@ -27,6 +27,22 @@ public abstract class Entity {
 
     public void remove() {
 	removed = true;
+    }
+    
+    public double getX() {
+	return x;
+    }
+    
+    public double getY() {
+	return y;
+    }
+        
+    public void setX(double x) {
+	this.x = x;
+    }
+    
+    public void setY(double y) {
+	this.y = y;
     }
 
     public abstract void update();

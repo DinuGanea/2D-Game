@@ -13,6 +13,8 @@ public class Sprite {
     public static final Sprite WALL = new Sprite(0, 1, SpriteSheet.TILES, 16);
 
     public static final Sprite CRACKS = new Sprite(0, 0, SpriteSheet.CRACKS, 1, 8, 16);
+    
+    public static final Sprite HEART = new Sprite(0, 0, SpriteSheet.OTHER, 16);
 
     public static final Sprite VOID = new Sprite(0x0066CC, 16);
 
@@ -29,9 +31,11 @@ public class Sprite {
     public static final Sprite BAD_TONNY_SIDE = new Sprite(2, 0, SpriteSheet.BAD_TONNY, 1, 3, 32);
 
     public static final Sprite SIMPLE_PROJECTILE = new Sprite(0, 0, SpriteSheet.PROJECTILES, 16);
+    public static final Sprite LASER = new Sprite(0, 1, SpriteSheet.PROJECTILES, 16);
 
     public static final Sprite PARTICLE = new Sprite(0x000000, 2);
     public static final Sprite BLOOD = new Sprite(0xAF111C, 2);
+    public static final Sprite SPARK = new Sprite(0xF6FF00, 1);
     
     public static final Sprite SPECIAL_POWERS = new Sprite(0, 0, SpriteSheet.SPECIAL_POWERS, 1, 4, 32);
     

@@ -3,6 +3,7 @@ package net.bestwebart.game.spawner;
 import net.bestwebart.game.Game;
 import net.bestwebart.game.entity.particle.Blood;
 import net.bestwebart.game.entity.particle.Pieces;
+import net.bestwebart.game.entity.particle.Spark;
 import net.bestwebart.game.entity.particle.Step;
 
 public class Spawner {
@@ -12,7 +13,7 @@ public class Spawner {
     private Type type;
 
     public enum Type {
-	PARTICLE, STEP, BLOOD
+	PARTICLE, STEP, BLOOD, SPARK
     }
 
     public Spawner(int x, int y, int nr, Type type) {
@@ -32,6 +33,8 @@ public class Spawner {
 		Game.level.addEntity(new Step(x, y));
 	    } else if (type == Type.BLOOD) {
 		Game.level.addEntity(new Blood(x, y));
+	    } else if (type == Type.SPARK) {
+		Game.level.addEntity(new Spark(x, y));
 	    }
 	}
     }

@@ -3,21 +3,23 @@ package net.bestwebart.game.entity.projectile;
 import net.bestwebart.game.entity.mob.Mob;
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.level.tiles.Tile;
+import net.bestwebart.game.spawner.Spawner;
+import net.bestwebart.game.spawner.Spawner.Type;
 
-public class SimpleProjectile extends Projectile {
+public class Laser extends Projectile {
 
-    public SimpleProjectile(double x, double y, double angle, Mob source) {
+    public Laser(double x, double y, double angle, Mob source) {
 	super(x, y, source);
 	this.angle = angle;
-	this.tile = Tile.SIMPLE_PROJECTILE;
+	this.tile = Tile.BLOOD;
 	
-	range = 200;
-	speed = 4;
-	rate = 20;
-	power = 10;
-
-	size = 8;
-	xOffset = yOffset = 8;
+	range = 300;
+	speed = 6;
+	rate = 0;
+	size = 2;
+	power = 20;
+	
+	xOffset = yOffset = 2;
 
 	nx = speed * Math.cos(angle);
 	ny = speed * Math.sin(angle);
@@ -32,6 +34,7 @@ public class SimpleProjectile extends Projectile {
 	if (getFlownDistance() < range) {
 	    x += nx;
 	    y += ny;
+	    new Spawner((int) x, (int) y, 10, Type.SPARK);
 	} else {
 	    remove();
 	}
