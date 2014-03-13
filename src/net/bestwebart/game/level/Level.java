@@ -1,5 +1,6 @@
 package net.bestwebart.game.level;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class Level {
     private final List<Projectile> projectiles = new ArrayList<Projectile>();
 
     private int tiles[][];
+    private List<Point> spawnPoints;
 
     public Level(String path) {
 	try {
@@ -38,6 +40,7 @@ public class Level {
 	    width = image.getWidth();
 	    height = image.getHeight();
 	    tiles = new int[width * height][2];
+	    spawnPoints = new ArrayList<Point>();
 	    loadLevelFromFile(path);
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -50,7 +53,13 @@ public class Level {
 
 	for (int y = 0; y < height; y++) {
 	    for (int x = 0; x < width; x++) {
-		tiles[x + y * width][0] = getTileByColor(tilesPixels[x + y * width]);
+		int tile = getTileByColor(tilesPixels[x + y * width]);
+		if (tile == 10) {
+		    tiles[x + y * width][0] = 1;
+		    spawnPoints.add(new Point(x << 4, y << 4));
+		} else {
+		    tiles[x + y * width][0] = tile;
+		}
 	    }
 	}
 
@@ -86,6 +95,9 @@ public class Level {
 		return 2;
 	    case Tile.WATER_COL:
 		return 4;
+	    case Tile.SPAWN_COL:
+		return 10;
+		
 	    default:
 		return 0;
 	}
@@ -391,6 +403,10 @@ public class Level {
     
     public List<Mob> getMobs() {
 	return mobs;
+    }
+    
+    public List<Point> getSpawnPoints() {
+	return spawnPoints;
     }
     
 }

@@ -131,19 +131,4 @@ public class BadTonny extends Mob {
 	}
     }
 
-    public boolean isCollision(double x, double y) {
-	boolean collision = false;
-	for (int corner = 0; corner < 4; corner++) {
-	    double xc = (x - corner % 2 * 15) / 16;
-	    double yc = (y - corner / 2 * 15) / 16;
-	    int xi = (corner % 2 == 0) ? (int) Math.floor(xc) : (int) Math.ceil(xc);
-	    int yi = (corner / 2 == 0) ? (int) Math.floor(yc) : (int) Math.ceil(yc);
-	    if (Game.level.getTile(xi, yi).isSolid()) {
-		return true;
-	    }
-	}
-	return collision;
-    }
-
-
 }

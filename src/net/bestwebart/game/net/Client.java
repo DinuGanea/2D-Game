@@ -120,9 +120,12 @@ public class Client extends Thread {
 	    player.setHP(hp);
 	    game.getLevel().addEntity(player);
 	} else {
+	    mob.setX(packet.getX());
+	    mob.setY(packet.getY());
 	    mob.revive();
 	    mob.setHP(packet.getHP());
 	}
+	System.out.println(packet.getUsername() + " respawned at [" + packet.getX() + ", " + packet.getY() + "]");
     }
 
     private void handleInvisibility(Packet06ToggleInvisible packet) {

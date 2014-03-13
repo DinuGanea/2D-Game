@@ -51,6 +51,7 @@ public abstract class Tile {
     public static final int GRASS_COL = 0xff00ff00;
     public static final int WALL_COL = 0xff151f25;
     public static final int WATER_COL = 0xff1c85fa;
+    public static final int SPAWN_COL = 0xfff8f8f8;
 
     public Tile(int id, Sprite sprite, boolean solid) {
 	this.id = id;

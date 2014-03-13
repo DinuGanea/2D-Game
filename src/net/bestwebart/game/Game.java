@@ -7,9 +7,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.HeadlessException;
+import java.awt.Point;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -65,12 +68,17 @@ public class Game extends Canvas implements Runnable {
     public Server server;
     
     public int respawn_in = 60 * 5;
+    private int timeToAddMob = 20;
+    private List<Point> spawnPoints;
+    private Random rand;
 
     private final BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     private final int pixels[] = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
     public Game() {
-
+	
+	rand = new Random();
+	
 	setPreferredSize(SIZE);
 
 	game = this;
@@ -150,6 +158,7 @@ public class Game extends Canvas implements Runnable {
 	if (server != null) {
 	    server.addConnections((PlayerMP) player, packet);
 	    server.start();
+	    
 	    Tonny tonny = new Tonny(100, 100, 100);
 	    Packet05AddNPC packetNPC = new Packet05AddNPC((int) tonny.getX(), (int) tonny.getY(), tonny.getHP(), tonny.getUniqueID(), MobType.TONNY.getID());
 	    packetNPC.writeData(client);
@@ -230,7 +239,18 @@ public class Game extends Canvas implements Runnable {
 	stop();
     }
 
-    private void update() {	
+    
+    private void update() {
+	
+	
+	if (server != null) {
+	    if (timeToAddMob <= 0) {
+		addMob();
+		timeToAddMob = 60 * 10;
+	    }
+	    timeToAddMob--;
+	}
+	
 	key.update();
 	if (!key.pause && !key.menu) {
 	    level.update();
@@ -243,12 +263,43 @@ public class Game extends Canvas implements Runnable {
 		player.setHP(100);
 		player.revive();
 		level.addEntity(player);
-		
-		Packet07Respawn packet = new Packet07Respawn(player.getUsername(), (int) player.getX(), (int) player.getY(), player.getHP(), player.getUniqueID());
+		Point p = getRandomSpawnPoint();
+		Packet07Respawn packet = new Packet07Respawn(player.getUsername(), (int) p.getX(), (int) p.getY(), player.getHP(), player.getUniqueID());
 		packet.writeData(client);
 		respawn_in = 60 * 5;
 	    }
 	}
+    }
+    
+    
+    
+    private void addMob() {
+
+	int t = rand.nextInt(3);
+	Point p = getRandomSpawnPoint();
+	Packet05AddNPC packetNPC = null;
+	if (t == 0 || t == 1) {
+	    Tonny tonny = new Tonny((int) p.getX(), (int) p.getY(), 50 + rand.nextInt(50));
+	    packetNPC = new Packet05AddNPC((int) tonny.getX(), (int) tonny.getY(), tonny.getHP(), tonny.getUniqueID(), MobType.TONNY.getID());
+	    packetNPC.writeData(client);
+	    
+	    System.out.print("Tonny added at ");
+	} else if (t == 2) {
+	    BadTonny bad_tonny = new BadTonny((int) p.getX(), (int) p.getY(), 50 + rand.nextInt(20));
+	    packetNPC = new Packet05AddNPC((int) bad_tonny.getX(), (int) bad_tonny.getY(), bad_tonny.getHP(), bad_tonny.getUniqueID(), MobType.BAD_TONNY.getID());
+	    packetNPC.writeData(client);
+	    System.out.print("BadTonny added at ");
+	}
+	
+	System.out.println("[" + (int) p.getX() + ", " + (int) p.getY() + "]");
+	
+	
+    }
+    
+    public Point getRandomSpawnPoint() {
+	spawnPoints = level.getSpawnPoints();
+	int i = rand.nextInt(spawnPoints.size());
+	return level.getSpawnPoints().get(i);
     }
 
     private void render() {
