@@ -19,6 +19,8 @@ public class Player extends Mob {
 
     private KeyboardHandler key;
     private MouseHandler mouse;
+    
+    private ProjectileType pType;
 
     private String username;
     private Font font;
@@ -43,6 +45,8 @@ public class Player extends Mob {
 	font = new Font("Arial", Font.BOLD, 15);
 	points = 0;
 
+	pType = ProjectileType.SIMPLE;
+	
 	animTile_up = new MobTile(-1, Sprite.PLAYER_UP, true, 120, 3);
 	animTile_down = new MobTile(-1, Sprite.PLAYER_DOWN, true, 120, 3);
 	animTile_side = new MobTile(-1, Sprite.PLAYER_SIDE, true, 120, 3);
@@ -61,12 +65,16 @@ public class Player extends Mob {
 
 	if (key != null) {
 
-	    if (points < 0) {
-		points = 0;
+	    
+	    if (key.butt1) {
+		pType = ProjectileType.SIMPLE;
+	    } else if (key.butt2){
+		pType = ProjectileType.LASER;
+		
 	    }
 
 	    keyInvisible = true;
-	    if (key.invisible && points > 0) {
+	    if (key.invisible && points - 2 >= 0) {
 		if (invisible) {
 		    keyInvisible = false;
 		}
@@ -128,14 +136,24 @@ public class Player extends Mob {
     public void updateShooting() {
 	if (mouse.getClickedButton() == 1 && shoots <= 0) {
 	    shoot(mouse);
-	    shoots = projectile.getRate();
+	    if (projectile != null && projectile.getRate() > 10) {
+		shoots = projectile.getRate();
+	    } else {
+		shoots = 20;
+	    }
 	}
     }
 
     private void shoot(MouseHandler mouse) {
 	double dx = mouse.getX() - getRealX();
 	double dy = mouse.getY() - getRealY();
-	shoot(dx, dy, x, y, ProjectileType.SIMPLE, this.hashCode());
+	
+	if (pType == ProjectileType.LASER && points - 10 >= 0) {
+	    shoot(dx, dy, x, y, ProjectileType.LASER, this.getUniqueID());
+	    points -= 10;
+	} else if (pType == ProjectileType.SIMPLE) {
+	    shoot(dx, dy, x, y, ProjectileType.SIMPLE, this.getUniqueID());
+	}
     }
 
     private void updateSteps() {
@@ -181,6 +199,10 @@ public class Player extends Mob {
 
     public void addPoints(int points) {
 	this.points += points;
+    }
+    
+    public ProjectileType getProjectileType() {
+	return pType;
     }
 
     public void render(Screen screen) {

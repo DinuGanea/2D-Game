@@ -15,7 +15,7 @@ public class Laser extends Projectile {
 	
 	range = 300;
 	speed = 6;
-	rate = 0;
+	rate = 5;
 	size = 2;
 	power = 20;
 	

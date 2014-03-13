@@ -95,17 +95,52 @@ public class Game extends Canvas implements Runnable {
 	    } catch (NumberFormatException e) {
 		e.printStackTrace();
 	    }
-
-	} else {
-	    level.addEntity(new Tonny(200, 100, 100));
-	    level.addEntity(new BadTonny(240, 200, 100));
-	    // level.addEntity(new BadTonny(300, 300, 100));
+	} else if (run_server == 2) {
+	    System.out.println("Exiting at 0.");
+	    System.exit(0);
 	}
 
 	String username = JOptionPane.showInputDialog(null, "Enter Username:");
-	if (username.trim() == "") {
+	if (username == null) {
+	    System.out.println("Exiting at 1.");
+	    System.exit(1);
+	}
+	if (username.trim().equals("")) {
 	    username = "Player";
 	}
+	
+	String info = ""
+		+ "<html>"
+		+ "<h3>SETTINGS:</h3>"
+		+ "<table border=1>"
+			+ "<tr>"
+				+ "<td>Walk:</td>"
+				+ "<td style='color: green'>WASD or ARROWS KEYS</td>"
+			+ "</tr>"
+			+ "<tr>"
+				+ "<td>Shoot:</td>"
+				+ "<td style='color: green'>LEFT CLICK</td>"
+			+ "</tr>"
+			+ "<tr>"
+				+ "<td>1st Weapon:</td>"
+				+ "<td style='color: green'>1</td>"
+			+ "</tr>"
+			+ "<tr>"
+				+ "<td>2nd Weapon:</td>"
+				+ "<td style='color: green'>2</td>"
+			+ "</tr>"
+			+ "<tr>"
+				+ "<td>Speed Boost:</td>"
+				+ "<td style='color: green'>SHIFT</td>"
+			+ "</tr>"
+			+ "<tr>"
+				+ "<td>Toggle invisible:</td>"
+				+ "<td style='color: green'>I</td>"
+			+ "</tr>"			
+		+ "</table>"
+		+ "<h4>Good Luck !!!</h3>"				
+		+ "</html>";
+	JOptionPane.showMessageDialog(null, info);
 
 	player = new PlayerMP(10, 10, username, key, mouse, null, -1, true);
 	level.addEntity(player);
@@ -262,12 +297,6 @@ public class Game extends Canvas implements Runnable {
 	    g.setFont(new Font("Arial", Font.PLAIN, 20));
 
 	    g.drawString("PAUSE", Game.getWindowWidth() / 2 - 40, Game.getWindowHeight() / 2 - 10);
-	} else if (key.menu) {
-
-	    // menu.setVisible(true);
-
-	} else {
-
 	}
 
 	g.dispose();

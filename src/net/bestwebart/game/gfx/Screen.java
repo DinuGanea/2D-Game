@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import net.bestwebart.game.Game;
 import net.bestwebart.game.entity.mob.Player;
+import net.bestwebart.game.entity.projectile.Projectile.ProjectileType;
 import net.bestwebart.game.level.tiles.Tile;
 
 public class Screen {
@@ -135,6 +136,13 @@ public class Screen {
 		g.setFont(new Font("Arial", Font.BOLD, 15));
 		g.setColor(Color.yellow);
 		g.drawString(points + "", xPos, yPos + 30);
+		
+		g.setColor(Color.green);
+		String projectile = "Canon";
+		if (((Player)Game.level.getPlayer()).getProjectileType() == ProjectileType.LASER) {
+		    projectile = "Laser";
+		}
+		g.drawString(projectile, xPos, yPos + 60);
 	
 	    }
 

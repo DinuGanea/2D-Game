@@ -71,7 +71,7 @@ public class BadTonny extends Mob {
 
 		    double distance = new Vector2i((int) x, (int) y).getDistance(new Vector2i((int) dpx, (int) dpy));
 
-		    if (distance < 100) {
+		    if (distance < 100 && !follow.isInvisible()) {
 			updateShooting(dpx, dpy);
 		    }
 

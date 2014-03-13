@@ -8,6 +8,8 @@ public class KeyboardHandler implements KeyListener {
     public boolean up, down, left, right;
     public boolean invisible, boost;
     public boolean pause, menu;
+    
+    public boolean butt1, butt2;
 
     private boolean keys[] = new boolean[260];
 
@@ -21,6 +23,9 @@ public class KeyboardHandler implements KeyListener {
 
 	invisible = keys[KeyEvent.VK_I];
 	boost = keys[KeyEvent.VK_SHIFT];
+	
+	butt1 = keys[KeyEvent.VK_1];
+	butt2 = keys[KeyEvent.VK_2];
 
 	pause = keys[KeyEvent.VK_PAUSE];
 

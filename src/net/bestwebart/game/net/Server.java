@@ -28,7 +28,6 @@ public class Server extends Thread {
     private Game game;
     private DatagramSocket socket;
     private int port;
-    private static int unameChangeNr = 0;
     
     private List<PlayerMP> connectedPlayers;
     
@@ -134,12 +133,7 @@ public class Server extends Thread {
     public void addConnections(PlayerMP player, Packet00Login packet) {
 	boolean alreadyExist = false;
 	for (PlayerMP p : connectedPlayers) {
-	    if (player.hashCode() == p.hashCode()) {
-
-		if (player.getUsername() == p.getUsername() || player.getUsername().trim() == "") {
-		    player.setUsername("Player_" + unameChangeNr);
-		    unameChangeNr++;
-		}
+	    if (player.getUsername().equalsIgnoreCase(p.getUsername())) {
 		
 		if (p.getIp() == null) {
 		    p.setIp(player.getIp());
