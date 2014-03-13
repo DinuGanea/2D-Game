@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.bestwebart.game.Game;
 import net.bestwebart.game.entity.projectile.Projectile.ProjectileType;
-import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.gfx.Sprite;
 import net.bestwebart.game.level.Node;
 import net.bestwebart.game.level.tiles.AnimatedTile;
@@ -19,6 +18,9 @@ public class BadTonny extends Mob {
 
     private double tlx, tly;
     private int tile_step, mob_steps;
+    
+    private Mob follow = null;
+    private int changeFollowTime = 0;
 
     public BadTonny(int x, int y, int life) {
 	super(x, y, (AnimatedTile) Tile.BAD_TONNY_UP);
@@ -40,73 +42,77 @@ public class BadTonny extends Mob {
     public void update() {
 
 	super.update();
-		
+
 	double nx = 0d, ny = 0d;
-	
+
 	if (Game.game.server != null) {
-	    Mob follow = Game.level.getMob(this.getUniqueID());
 
-	    if (follow == null) {
-		tileNr = 0;
-		animTile.setCurrFrameTo(0);
-		follow = null;
-		return;
-	    }
+	    if (changeFollowTime <= 0) {
+		follow = Game.level.getClosestMobToFollow(this.getUniqueID(), new Vector2i((int) this.x, (int) this.y));
+		changeFollowTime = 60 * 20;
+	    } 
+	    changeFollowTime--;
 
-	    
 	    if (time > 10000) {
 		time = 0;
 	    } else {
 		time++;
 	    }
 
-	    double dpx = follow.getX();
-	    double dpy = follow.getY();
+	    if (follow != null && !follow.isRemoved()) {
+		
+		double dpx = follow.getX();
+		double dpy = follow.getY();
 
-	    if (time % 20 == 0) {
+		if (time % 20 == 0) {
 
-		int pX = (int) dpx + 16 >> 4;
-		int pY = (int) dpy + 16 >> 4;
+		    int pX = (int) dpx + 16 >> 4;
+		    int pY = (int) dpy + 16 >> 4;
 
-		double distance = new Vector2i((int) x, (int) y).getDistance(new Vector2i((int) dpx, (int) dpy));
+		    double distance = new Vector2i((int) x, (int) y).getDistance(new Vector2i((int) dpx, (int) dpy));
 
-		if (distance < 100) {
-		    updateShooting(dpx, dpy);
-		}
+		    if (distance < 100) {
+			updateShooting(dpx, dpy);
+		    }
 
-		if (pX != tlx || pY != tly) {
-		    path = Game.level.findPath(new Vector2i((int) x >> 4, (int) y >> 4), new Vector2i(pX, pY));
-		    tile_step = 1;
-		    tlx = pX;
-		    tly = pY;
-		}
-	    }
-
-	    if (path != null && path.size() > 0) {
-		int tx = (path.get(path.size() - tile_step).tile.getX() << 4) - 8;
-		int ty = (path.get(path.size() - tile_step).tile.getY() << 4) - 8;
-
-		if (tx > x) {
-		    nx += speed;
-		} else if (tx < x) {
-		    nx -= speed;
-		}
-		if (ty > y) {
-		    ny += speed;
-		} else if (ty < y) {
-		    ny -= speed;
-		}
-
-		mob_steps++;
-		if (mob_steps == 16) {
-		    if ((path.size() - tile_step) > 0) {
-			tile_step++;
-			mob_steps = 0;
-		    } else {
-			path = null;
-			mob_steps = 0;
+		    if (pX != tlx || pY != tly) {
+			path = Game.level.findPath(new Vector2i((int) x >> 4, (int) y >> 4), new Vector2i(pX, pY));
+			tile_step = 1;
+			tlx = pX;
+			tly = pY;
 		    }
 		}
+
+		if (path != null && path.size() > 0) {
+		    int tx = (path.get(path.size() - tile_step).tile.getX() << 4) - 8;
+		    int ty = (path.get(path.size() - tile_step).tile.getY() << 4) - 8;
+
+		    if (tx > x) {
+			nx += speed;
+		    } else if (tx < x) {
+			nx -= speed;
+		    }
+		    if (ty > y) {
+			ny += speed;
+		    } else if (ty < y) {
+			ny -= speed;
+		    }
+
+		    mob_steps++;
+		    if (mob_steps == 16) {
+			if ((path.size() - tile_step) > 0) {
+			    tile_step++;
+			    mob_steps = 0;
+			} else {
+			    path = null;
+			    mob_steps = 0;
+			}
+		    }
+		}
+	    } else {
+		tileNr = 0;
+		animTile.setCurrFrameTo(0);
+		changeFollowTime = 0;
 	    }
 
 	}
@@ -139,8 +145,5 @@ public class BadTonny extends Mob {
 	return collision;
     }
 
-    public void render(Screen screen) {
-	screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);
-    }
 
 }

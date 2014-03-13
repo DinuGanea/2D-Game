@@ -10,8 +10,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import net.bestwebart.game.entity.Entity;
+import net.bestwebart.game.entity.mob.BadTonny;
 import net.bestwebart.game.entity.mob.Mob;
-import net.bestwebart.game.entity.mob.Player;
 import net.bestwebart.game.entity.mob.PlayerMP;
 import net.bestwebart.game.entity.particle.Particle;
 import net.bestwebart.game.entity.projectile.Projectile;
@@ -84,6 +84,8 @@ public class Level {
 		return 1;
 	    case Tile.WALL_COL:
 		return 2;
+	    case Tile.WATER_COL:
+		return 4;
 	    default:
 		return 0;
 	}
@@ -108,6 +110,9 @@ public class Level {
     }
 
     public synchronized void update() {	
+	
+	Tile.WATER.update();
+	
 	for (int i = 0; i < mobs.size(); i++) {
 	    if (!mobs.get(i).isRemoved() && mobs.get(i) != null) {
 		mobs.get(i).update();
@@ -183,9 +188,9 @@ public class Level {
 	
     }
 
-    public Mob getPlayer() {
+    public synchronized Mob getPlayer() {
 	for (Mob mob : mobs) {
-	    if (mob instanceof Player) {
+	    if (mob instanceof PlayerMP && ((PlayerMP) mob).isMain()) {
 		return mob;
 	    }
 	}
@@ -193,6 +198,9 @@ public class Level {
     }
     
     public Mob getMob(int uniqueID) {
+	List<Mob> mobs = new ArrayList<Mob>();
+	mobs = this.mobs;
+	//Collections.shuffle(mobs);
 	for (Mob mob : mobs) {
 	    if (!mob.isInvisible() && mob.getUniqueID() != uniqueID) {
 		return mob;
@@ -200,6 +208,22 @@ public class Level {
 	}
 	return null;
     }
+    
+    public Mob getClosestMobToFollow(int uniqueID, Vector2i p1) {
+	double min = Double.MAX_VALUE;
+	Mob follow = null;
+	for (Mob mob : mobs) {
+	    if (!mob.isInvisible() && mob.getUniqueID() != uniqueID && !(mob instanceof BadTonny)) {
+		double distance = p1.getDistance(new Vector2i((int) mob.getX(), (int) mob.getY())); 
+		if (distance < min) {
+		    min = distance;
+		    follow = mob;
+		}
+	    }
+	}	
+	return follow;
+    }
+    
 
     public boolean isMobCollision(int x, int y, Projectile projectile) {
 	for (int i = 0; i < mobs.size(); i++) {
@@ -207,6 +231,9 @@ public class Level {
 		int mx = (int) mobs.get(i).getX();
 		int my = (int) mobs.get(i).getY();
 		if (x > mx + 10 && x < mx + 20 && y > my - 5 && y < my + 30) {
+		    if (getMobByHashCode(projectile.getSource().getUniqueID()) instanceof PlayerMP) {
+			((PlayerMP) getMobByHashCode(projectile.getSource().getUniqueID())).addPoints(projectile.getPower());
+		    }
 		    mobs.get(i).decreaseDamage(projectile.getPower());
 		    return true;
 		}

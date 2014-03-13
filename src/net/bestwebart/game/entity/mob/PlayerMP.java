@@ -9,17 +9,20 @@ public class PlayerMP extends Player {
     
     private InetAddress address;
     private int port;
+    private boolean main;
     
-    public PlayerMP(int x, int y, String username, KeyboardHandler key, MouseHandler mouse, InetAddress address, int port) {
+    public PlayerMP(int x, int y, String username, KeyboardHandler key, MouseHandler mouse, InetAddress address, int port, boolean main) {
 	super(x, y, key, mouse, username);
 	this.address = address;
 	this.port = port;
+	this.main = main;
     }
     
-    public PlayerMP(int x, int y, String username, InetAddress address, int port) {
+    public PlayerMP(int x, int y, String username, InetAddress address, int port, boolean main) {
 	super(x, y, null, null, username);
 	this.address = address;
 	this.port = port;
+	this.main = main;
     }
     
     public InetAddress getIp() {
@@ -36,6 +39,10 @@ public class PlayerMP extends Player {
     
     public void setPort(int port) {
 	this.port = port;
+    }
+    
+    public boolean isMain() {
+	return main;
     }
     
     public void update() {

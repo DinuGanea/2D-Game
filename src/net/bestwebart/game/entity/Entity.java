@@ -29,6 +29,10 @@ public abstract class Entity {
 	removed = true;
     }
     
+    public void revive() {
+	removed = false;
+    }
+    
     public double getX() {
 	return x;
     }

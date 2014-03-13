@@ -20,19 +20,22 @@ import net.bestwebart.game.net.packets.Packet02Move;
 import net.bestwebart.game.net.packets.Packet03Projectile;
 import net.bestwebart.game.net.packets.Packet04Tiles;
 import net.bestwebart.game.net.packets.Packet05AddNPC;
+import net.bestwebart.game.net.packets.Packet06ToggleInvisible;
+import net.bestwebart.game.net.packets.Packet07Respawn;
 
 public class Server extends Thread {
 
     private Game game;
     private DatagramSocket socket;
     private int port;
+    private static int unameChangeNr = 0;
     
     private List<PlayerMP> connectedPlayers;
     
     public Server(Game game) {
 	this.game = game;
 	connectedPlayers = new ArrayList<PlayerMP>();
-	port = 1302;
+	port = 1303;
 	try {	
 	    socket = new DatagramSocket(port);
 	} catch(SocketException e) {
@@ -43,7 +46,7 @@ public class Server extends Thread {
     
     public void run() {
 	while (true) {
-	    byte data[] = new byte[4000];
+	    byte data[] = new byte[5000];
 	    DatagramPacket packet = new DatagramPacket(data, data.length);
 	    try {
 		socket.receive(packet);
@@ -82,6 +85,13 @@ public class Server extends Thread {
 		packet = new Packet05AddNPC(data);
 		addNPC((Packet05AddNPC) packet);
 		break;
+	    case INVISIBLE:
+		packet = new Packet06ToggleInvisible(data);
+		handleInvisibility((Packet06ToggleInvisible) packet);
+		break;
+	    case RESPAWN:
+		packet = new Packet07Respawn(data);
+		respawn((Packet07Respawn) packet);
 	    default:
 		break;
 		
@@ -89,6 +99,14 @@ public class Server extends Thread {
 	}
     }
     
+    private void respawn(Packet07Respawn packet) {
+	packet.writeData(this);
+    }
+
+    private void handleInvisibility(Packet06ToggleInvisible packet) {
+	packet.writeData(this);
+    }
+
     private void addNPC(Packet05AddNPC packet) {
 	packet.writeData(this);
     }
@@ -99,7 +117,7 @@ public class Server extends Thread {
 
     private void handleLogin(Packet00Login packet, InetAddress address, int port) {
 	System.out.println(packet.getUsername() + " [" + address.getHostAddress() + ":" + port + "] has connected!");
-	PlayerMP player = new PlayerMP((int) packet.getX(), (int) packet.getY(), packet.getUsername(), address, port);
+	PlayerMP player = new PlayerMP((int) packet.getX(), (int) packet.getY(), packet.getUsername(), address, port, false);
 	addConnections(player, packet);
     }
 
@@ -116,7 +134,12 @@ public class Server extends Thread {
     public void addConnections(PlayerMP player, Packet00Login packet) {
 	boolean alreadyExist = false;
 	for (PlayerMP p : connectedPlayers) {
-	    if (player.getUsername().equalsIgnoreCase(p.getUsername())) {
+	    if (player.hashCode() == p.hashCode()) {
+
+		if (player.getUsername() == p.getUsername() || player.getUsername().trim() == "") {
+		    player.setUsername("Player_" + unameChangeNr);
+		    unameChangeNr++;
+		}
 		
 		if (p.getIp() == null) {
 		    p.setIp(player.getIp());
@@ -164,7 +187,9 @@ public class Server extends Thread {
 
     public void sendToAll(byte[] data) {
 	for (PlayerMP p : connectedPlayers) {
-	    sendData(data, p.getIp(), p.getPort());
+	    if (p.getIp() != null) {
+		sendData(data, p.getIp(), p.getPort());
+	    }
 	}
     }
     

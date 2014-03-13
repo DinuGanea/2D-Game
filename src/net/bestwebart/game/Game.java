@@ -29,6 +29,7 @@ import net.bestwebart.game.net.Client;
 import net.bestwebart.game.net.Server;
 import net.bestwebart.game.net.packets.Packet00Login;
 import net.bestwebart.game.net.packets.Packet05AddNPC;
+import net.bestwebart.game.net.packets.Packet07Respawn;
 
 public class Game extends Canvas implements Runnable {
 
@@ -62,11 +63,14 @@ public class Game extends Canvas implements Runnable {
 
     public Client client;
     public Server server;
+    
+    public int respawn_in = 60 * 5;
 
     private final BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     private final int pixels[] = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
     public Game() {
+
 	setPreferredSize(SIZE);
 
 	game = this;
@@ -95,6 +99,7 @@ public class Game extends Canvas implements Runnable {
 	} else {
 	    level.addEntity(new Tonny(200, 100, 100));
 	    level.addEntity(new BadTonny(240, 200, 100));
+	    // level.addEntity(new BadTonny(300, 300, 100));
 	}
 
 	String username = JOptionPane.showInputDialog(null, "Enter Username:");
@@ -102,25 +107,32 @@ public class Game extends Canvas implements Runnable {
 	    username = "Player";
 	}
 
-	player = new PlayerMP(10, 10, username, key, mouse, null, -1);
+	player = new PlayerMP(10, 10, username, key, mouse, null, -1, true);
 	level.addEntity(player);
 	Packet00Login packet = new Packet00Login(player.getUsername(), player.getX(), player.getY(), player.getHP(), player.getUniqueID());
 	packet.writeData(client);
-	
-	
+
 	if (server != null) {
 	    server.addConnections((PlayerMP) player, packet);
 	    server.start();
 	    Tonny tonny = new Tonny(100, 100, 100);
-	    Packet05AddNPC packetNPC = new Packet05AddNPC((int)tonny.getX(), (int)tonny.getY(), tonny.getHP(), tonny.getUniqueID(), MobType.TONNY.getID());
+	    Packet05AddNPC packetNPC = new Packet05AddNPC((int) tonny.getX(), (int) tonny.getY(), tonny.getHP(), tonny.getUniqueID(), MobType.TONNY.getID());
 	    packetNPC.writeData(client);
-	    
-	    BadTonny bad_tonny = new BadTonny(170, 200, 100);
-	    packetNPC = new Packet05AddNPC((int)bad_tonny.getX(), (int)bad_tonny.getY(), bad_tonny.getHP(), bad_tonny.getUniqueID(), MobType.BAD_TONNY.getID());
+
+	    BadTonny bad_tonny = new BadTonny(170, 20, 20);
+	    packetNPC = new Packet05AddNPC((int) bad_tonny.getX(), (int) bad_tonny.getY(), bad_tonny.getHP(), bad_tonny.getUniqueID(), MobType.BAD_TONNY.getID());
 	    packetNPC.writeData(client);
+
+	    bad_tonny = new BadTonny(200, 300, 100);
+	    packetNPC = new Packet05AddNPC((int) bad_tonny.getX(), (int) bad_tonny.getY(), bad_tonny.getHP(), bad_tonny.getUniqueID(), MobType.BAD_TONNY.getID());
+	    packetNPC.writeData(client);
+
+	    bad_tonny = new BadTonny(250, 300, 100);
+	    packetNPC = new Packet05AddNPC((int) bad_tonny.getX(), (int) bad_tonny.getY(), bad_tonny.getHP(), bad_tonny.getUniqueID(), MobType.BAD_TONNY.getID());
+	    packetNPC.writeData(client);
+
 	}
-
-
+	
 	addKeyListener(key);
 	addMouseListener(mouse);
 	addMouseMotionListener(mouse);
@@ -143,7 +155,7 @@ public class Game extends Canvas implements Runnable {
 	}
     }
 
-    public void run() {
+    public synchronized void run() {
 	long lastTime = System.nanoTime();
 	long now = 0l;
 	double nsPerUpdate = 1_000_000_000 / 60;
@@ -183,10 +195,24 @@ public class Game extends Canvas implements Runnable {
 	stop();
     }
 
-    private void update() {
+    private void update() {	
 	key.update();
 	if (!key.pause && !key.menu) {
 	    level.update();
+	}
+
+	if (player.isRemoved()) {
+	    respawn_in--;
+
+	    if (respawn_in <= 0) {
+		player.setHP(100);
+		player.revive();
+		level.addEntity(player);
+		
+		Packet07Respawn packet = new Packet07Respawn(player.getUsername(), (int) player.getX(), (int) player.getY(), player.getHP(), player.getUniqueID());
+		packet.writeData(client);
+		respawn_in = 60 * 5;
+	    }
 	}
     }
 

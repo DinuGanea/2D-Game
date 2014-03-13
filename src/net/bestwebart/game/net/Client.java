@@ -25,6 +25,8 @@ import net.bestwebart.game.net.packets.Packet02Move;
 import net.bestwebart.game.net.packets.Packet03Projectile;
 import net.bestwebart.game.net.packets.Packet04Tiles;
 import net.bestwebart.game.net.packets.Packet05AddNPC;
+import net.bestwebart.game.net.packets.Packet06ToggleInvisible;
+import net.bestwebart.game.net.packets.Packet07Respawn;
 
 public class Client extends Thread {
 
@@ -35,11 +37,10 @@ public class Client extends Thread {
 
     public Client(Game game, String ipAddress) {
 	this.game = game;
-	port = 1302;
+	port = 1303;
 	try {
 	    socket = new DatagramSocket();
 	    this.ipAddress = InetAddress.getByName(ipAddress);
-	    System.out.println(this.ipAddress);
 	} catch (SocketException e) {
 	    e.printStackTrace();
 	} catch (UnknownHostException e) {
@@ -49,7 +50,7 @@ public class Client extends Thread {
 
     public void run() {
 	while (true) {
-	    byte data[] = new byte[4000];
+	    byte data[] = new byte[5000];
 	    DatagramPacket packet = new DatagramPacket(data, data.length);
 	    try {
 		socket.receive(packet);
@@ -92,10 +93,43 @@ public class Client extends Thread {
 		packet = new Packet05AddNPC(data);
 		addNPC((Packet05AddNPC) packet);
 		break;
+	    case INVISIBLE:
+		packet = new Packet06ToggleInvisible(data);
+		handleInvisibility((Packet06ToggleInvisible) packet);
+		break;
+	    case RESPAWN:
+		packet = new Packet07Respawn(data);
+		respawn((Packet07Respawn) packet, address, port);
 	    default:
 		break;
 
 	}
+    }
+
+    private void respawn(Packet07Respawn packet, InetAddress address, int port) {
+	Mob mob = game.getLevel().getMobByHashCode(packet.getUniqueID());
+	if (mob == null) {
+	    int x = packet.getX();
+	    int y = packet.getY();
+	    String username = packet.getUsername();
+	    int hp = packet.getHP();
+	    int uniqueID = packet.getUniqueID();
+
+	    PlayerMP player = new PlayerMP(x, y, username, address, port, false);
+	    player.setUniqueID(uniqueID);
+	    player.setHP(hp);
+	    game.getLevel().addEntity(player);
+	} else {
+	    mob.revive();
+	    mob.setHP(packet.getHP());
+	}
+    }
+
+    private void handleInvisibility(Packet06ToggleInvisible packet) {
+	int id = packet.getUniqueID();
+	boolean invisible = packet.isInvisible();
+
+	game.getLevel().getMobByHashCode(id).setInvisible(invisible);
     }
 
     private void addNPC(Packet05AddNPC packet) {
@@ -115,7 +149,6 @@ public class Client extends Thread {
 	mob.setUniqueID(uniqueID);
 
 	game.getLevel().addEntity(mob);
-
     }
 
     private void addProjectile(Packet03Projectile packet) {
@@ -145,7 +178,7 @@ public class Client extends Thread {
 
     private void handleLogin(Packet00Login packet, InetAddress address, int port) {
 	System.out.println(packet.getUsername() + " [" + address.getHostAddress() + ":" + port + "] joined!");
-	PlayerMP player = new PlayerMP((int) packet.getX(), (int) packet.getY(), packet.getUsername(), address, port);
+	PlayerMP player = new PlayerMP((int) packet.getX(), (int) packet.getY(), packet.getUsername(), address, port, false);
 	player.setUniqueID(packet.getUniqueID());
 	player.setHP(packet.getHP());
 	game.getLevel().addEntity(player);

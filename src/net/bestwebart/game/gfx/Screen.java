@@ -60,6 +60,26 @@ public class Screen {
 	    }
 	}
     }
+    
+    public void renderMobInWater(int xPos, int yPos, Tile tile, boolean flip, int tileNr) {
+	xPos -= xOffset;
+	yPos -= yOffset;
+	for (int y = 0; y < tile.sprite.SIZE / 2 + 2; y++) {
+	    int yp = yPos + y;
+	    for (int x = 0; x < tile.sprite.SIZE; x++) {
+		int flipX = (flip) ? tile.sprite.SIZE - x - 1 : x;
+		int xp = xPos + x;
+		if (xp < 0 || xp >= width || yp < 0 || yp >= height) {
+		    continue;
+		}
+		int col = tile.sprite.pixels[flipX + (y + tileNr * tile.sprite.SIZE) * tile.sprite.SIZE];
+		if (col != 0xffff00ff) {
+
+		    pixels[xp + yp * width] = col;
+		}
+	    }
+	}
+    }    
 
     // Only for test
     public void renderSprite(int xPos, int yPos, Sprite sprite) {
@@ -100,16 +120,22 @@ public class Screen {
 
     public void renderBar(int xPos, int yPos, Graphics g) {
 	Player p = (Player) Game.level.getPlayer();
-	if (p != null) {
+	if (p != null && !p.isRemoved()) {
 
 	    if (p.getHP() > 0) {
 		int pHP = Game.level.getPlayer().getHP();
+		int points = ((Player)Game.level.getPlayer()).getPoints();
 
 		Color col = new Color(0x99C9C9C9, true);
 		g.drawRect(xPos, yPos, 100, 10);
 		col = new Color(0xAAFF0000, true);
 		g.setColor(col);
 		g.fillRect(xPos, yPos, pHP, 11);
+		
+		g.setFont(new Font("Arial", Font.BOLD, 15));
+		g.setColor(Color.yellow);
+		g.drawString(points + "", xPos, yPos + 30);
+	
 	    }
 
 	} else {
@@ -120,7 +146,8 @@ public class Screen {
 	    g.setColor(Color.red);
 	    g.setFont(new Font("Arial", Font.PLAIN, 20));
 
-	    g.drawString("GAME OVER!", Game.getWindowWidth() / 2 - 40, Game.getWindowHeight() / 2 - 10);
+	    g.drawString("GAME OVER!", Game.getWindowWidth() / 2 - 70, Game.getWindowHeight() / 2 - 40);
+	    g.drawString("Respawn in " + (Game.game.respawn_in / 60) + " seconds" , Game.getWindowWidth() / 2 - 100, Game.getWindowHeight() / 2);
 	}
 
     }

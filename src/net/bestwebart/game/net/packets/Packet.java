@@ -7,7 +7,7 @@ public abstract class Packet {
     
     public static enum PacketType {
 	INVALID(-1), LOGIN(00), DISCONNECT(01), MOVE(02), PROJECTILE(03), 
-	TILES(04), ADD_NPC(05);
+	TILES(04), ADD_NPC(05), INVISIBLE(06), RESPAWN(07);
 	
 	private int id;
 	

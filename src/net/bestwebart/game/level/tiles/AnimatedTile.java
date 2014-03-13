@@ -5,13 +5,14 @@ import net.bestwebart.game.gfx.Sprite;
 
 public class AnimatedTile extends Tile {
 
-    protected int transitionPeriod;
+    protected int transitionPeriod, sTransitionPeriod;
     protected long lTransitionTime;
     protected int currFrame, framesNr;
 
     public AnimatedTile(int id, Sprite sprite, boolean solid, int transitionPeriod, int frames) {
 	super(id, sprite, solid);
 	this.transitionPeriod = transitionPeriod;
+	sTransitionPeriod = transitionPeriod;
 	this.lTransitionTime = System.currentTimeMillis();
 	currFrame = 0;
 	framesNr = frames;
@@ -40,6 +41,18 @@ public class AnimatedTile extends Tile {
 	if (currFrame < framesNr - 1) {
 	    currFrame++;
 	}
+    }
+    
+    public void setTransitionPeriod(int period) {
+	this.transitionPeriod = period;
+    }
+    
+    public void resetTransitionPeriod() {
+	transitionPeriod = sTransitionPeriod;
+    }
+    
+    public int getT() {
+	return this.transitionPeriod;
     }
 
 }

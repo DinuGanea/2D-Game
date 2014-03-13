@@ -11,6 +11,10 @@ public class Sprite {
 
     public static final Sprite GRASS = new Sprite(0, 0, SpriteSheet.TILES, 16);
     public static final Sprite WALL = new Sprite(0, 1, SpriteSheet.TILES, 16);
+    public static final Sprite TREE = new Sprite(0, 0, SpriteSheet.TREES, 32);
+    
+    public static final Sprite WATER = new Sprite(0, 0, SpriteSheet.WATER, 1, 3, 16);
+    public static final Sprite WAVES = new Sprite(1, 0, SpriteSheet.WATER, 1, 3, 16);
 
     public static final Sprite CRACKS = new Sprite(0, 0, SpriteSheet.CRACKS, 1, 8, 16);
     
@@ -38,7 +42,6 @@ public class Sprite {
     public static final Sprite SPARK = new Sprite(0xF6FF00, 1);
     
     public static final Sprite SPECIAL_POWERS = new Sprite(0, 0, SpriteSheet.SPECIAL_POWERS, 1, 4, 32);
-    
     
 
     public Sprite(int x, int y, SpriteSheet sheet, int size) {

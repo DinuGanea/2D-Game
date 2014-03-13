@@ -8,28 +8,32 @@ import net.bestwebart.game.entity.projectile.Projectile.ProjectileType;
 import net.bestwebart.game.entity.projectile.SimpleProjectile;
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.level.tiles.AnimatedTile;
+import net.bestwebart.game.level.tiles.Tile;
+import net.bestwebart.game.level.tiles.animated_tiles.Water;
 import net.bestwebart.game.net.packets.Packet02Move;
 import net.bestwebart.game.net.packets.Packet03Projectile;
 import net.bestwebart.game.spawner.Spawner;
 import net.bestwebart.game.spawner.Spawner.Type;
 
 public abstract class Mob extends Entity {
-    
+
     public enum MobType {
 	TONNY(1), BAD_TONNY(2);
-	
+
 	private int id;
-	
+
 	private MobType(int id) {
 	    this.id = id;
 	}
-	
+
 	public int getID() {
 	    return id;
 	}
     }
+    
+    private boolean wasSwimming = false;
 
-    protected boolean invisible;
+    protected boolean invisible, boost;
 
     protected double speed, normalSpeed;
     protected boolean moving;
@@ -40,7 +44,7 @@ public abstract class Mob extends Entity {
     protected int shoots;
     protected double angle;
     protected int hp;
-    
+
     protected int uniqueID;
     public int NPCType;
 
@@ -52,16 +56,15 @@ public abstract class Mob extends Entity {
 	this.uniqueID = hashCode();
 	this.animTile = animTile;
     }
-    
+
     public void setUniqueID(int uniqueID) {
 	this.uniqueID = uniqueID;
     }
-    
+
     public int getUniqueID() {
 	return uniqueID;
     }
 
-    
     public void move(double nx, double ny) {
 
 	if (ny > 0) {
@@ -80,9 +83,7 @@ public abstract class Mob extends Entity {
 	    flip = false;
 	    setDir(1);
 	}
-	
 
-	
 	while (nx != 0) {
 	    if (nx > 1) {
 		if (!isCollision(x + getSignedValue(nx), y)) {
@@ -110,8 +111,7 @@ public abstract class Mob extends Entity {
 		ny = 0;
 	    }
 	}
-	
-	
+
 	Packet02Move packet = new Packet02Move((int) x, (int) y, dir, true, this.getUniqueID());
 	packet.writeData(Game.game.client);
 
@@ -127,15 +127,15 @@ public abstract class Mob extends Entity {
     public int getHP() {
 	return hp;
     }
-    
+
     public void setHP(int hp) {
 	this.hp = hp;
     }
-    
+
     public AnimatedTile getTile() {
 	return animTile;
     }
-    
+
     public boolean isCollision(double x, double y) {
 	boolean collision = false;
 	for (int corner = 0; corner < 4; corner++) {
@@ -163,9 +163,9 @@ public abstract class Mob extends Entity {
 	    projectile = new Laser(x, y, angle, this);
 	    packet = new Packet03Projectile((int) x, (int) y, angle, this.getUniqueID(), ProjectileType.LASER.getID());
 	}
-	
+
 	packet.writeData(Game.game.client);
-	//Game.level.addEntity(projectile);
+	// Game.level.addEntity(projectile);
     }
 
     public boolean isInvisible() {
@@ -203,10 +203,23 @@ public abstract class Mob extends Entity {
     public void setMoving(boolean moving) {
 	this.moving = moving;
     }
-        
+
+    public void setInvisible(boolean invisible) {
+	this.invisible = invisible;
+    }
+
+    public boolean inWater() {
+	if (Game.game.getLevel().getTile((int) x + 16 >> 4, (int) y + 30 >> 4) instanceof Water) {
+	    return true;
+	} else {
+	    return false;
+	}
+    }
+
     private int walk_delay = 30;
-    
+
     public void update() {
+		
 	if (hp <= 0) {
 	    new Spawner((int) x + 16, (int) y + 16, 1000, Type.BLOOD);
 	    this.remove();
@@ -216,8 +229,10 @@ public abstract class Mob extends Entity {
 	    shoots--;
 	}
 	
-	
 	if (moving) {
+	    animTile.update();
+	    tileNr = animTile.getCurrFrame();
+	} else if (inWater()) {
 	    animTile.update();
 	    tileNr = animTile.getCurrFrame();
 	} else {
@@ -227,10 +242,31 @@ public abstract class Mob extends Entity {
 		walk_delay = 30;
 	    }
 	}
-	
+
 	walk_delay--;
     }
-    
-    public abstract void render(Screen screen);
-
+      
+    public void render(Screen screen) {
+	if (inWater()) {	    
+	    this.animTile.setTransitionPeriod(240);
+	    screen.renderAnimatedTiles((int) x, (int) y + 15, Tile.WAVES, false, tileNr);
+	    screen.renderAnimatedTiles((int) x + 16, (int) y + 15, Tile.WAVES, true, tileNr);
+	    
+	    if (!wasSwimming) {
+		screen.renderMobInWater((int) x, (int) y, animTile, flip, tileNr);
+		wasSwimming = true;
+	    } else {
+		screen.renderMobInWater((int) x, (int) y + 5, animTile, flip, tileNr);		
+	    }
+	} else {  
+	    this.animTile.resetTransitionPeriod();
+	    if (wasSwimming) {
+		screen.renderAnimatedTiles((int) x, (int) y - 5, animTile, flip, tileNr);
+		this.animTile.resetTransitionPeriod();
+		wasSwimming = false;
+	    } else {
+		screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);
+	    }
+	}
+    }
 }

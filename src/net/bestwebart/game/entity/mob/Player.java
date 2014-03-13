@@ -13,6 +13,7 @@ import net.bestwebart.game.input.MouseHandler;
 import net.bestwebart.game.level.tiles.AnimatedTile;
 import net.bestwebart.game.level.tiles.Tile;
 import net.bestwebart.game.level.tiles.animated_tiles.MobTile;
+import net.bestwebart.game.net.packets.Packet06ToggleInvisible;
 
 public class Player extends Mob {
 
@@ -23,6 +24,10 @@ public class Player extends Mob {
     private Font font;
 
     private int steps;
+    private int points;
+
+    private boolean keyInvisible = false;
+    private boolean keyBoost = false;
 
     private boolean step = false;
 
@@ -36,14 +41,15 @@ public class Player extends Mob {
 	flip = false;
 	this.username = username;
 	font = new Font("Arial", Font.BOLD, 15);
+	points = 0;
 
 	animTile_up = new MobTile(-1, Sprite.PLAYER_UP, true, 120, 3);
 	animTile_down = new MobTile(-1, Sprite.PLAYER_DOWN, true, 120, 3);
 	animTile_side = new MobTile(-1, Sprite.PLAYER_SIDE, true, 120, 3);
     }
-        
-        
+
     public void update() {
+
 	super.update();
 
 	if (mouse != null) {
@@ -52,12 +58,24 @@ public class Player extends Mob {
 
 	double nx = 0;
 	double ny = 0;
-	
+
 	if (key != null) {
 
-	    if (key.invisible) {
+	    if (points < 0) {
+		points = 0;
+	    }
+
+	    keyInvisible = true;
+	    if (key.invisible && points > 0) {
+		if (invisible) {
+		    keyInvisible = false;
+		}
 		invisible = true;
+		points -= 2;
 	    } else {
+		if (!invisible) {
+		    keyInvisible = false;
+		}
 		invisible = false;
 	    }
 
@@ -66,6 +84,20 @@ public class Player extends Mob {
 		    steps--;
 		}
 		updateSteps();
+	    }
+
+	    if (keyInvisible) {
+		Packet06ToggleInvisible packetInvisible = new Packet06ToggleInvisible(this.getUniqueID(), invisible);
+		packetInvisible.writeData(Game.game.client);
+	    }
+
+	    if (key.boost && points > 0) {
+		boost = true;
+		points--;
+		speed = 2;
+	    } else {
+		boost = false;
+		resetSpeed();
 	    }
 
 	    if (key.up) {
@@ -126,6 +158,10 @@ public class Player extends Mob {
     public String getUsername() {
 	return username;
     }
+    
+    public void setUsername(String username) {
+	this.username = username;
+    }
 
     public double getRealX() {
 	return (x - Game.getXScroll()) * Game.SCALE;
@@ -135,9 +171,21 @@ public class Player extends Mob {
 	return (y - Game.getYScroll()) * Game.SCALE;
     }
 
+    public int getPoints() {
+	return points;
+    }
+
+    public void setPoints(int points) {
+	this.points = points;
+    }
+
+    public void addPoints(int points) {
+	this.points += points;
+    }
+
     public void render(Screen screen) {
 	screen.renderText(username, (int) getRealX(), (int) getRealY() - 5, font, Color.black);
-	screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);
+	super.render(screen);
     }
 
 }

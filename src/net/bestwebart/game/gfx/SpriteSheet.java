@@ -12,6 +12,8 @@ public class SpriteSheet {
     public int pixels[];
 
     public static final SpriteSheet TILES = new SpriteSheet("/sprites/tiles.png");
+    public static final SpriteSheet TREES = new SpriteSheet("/sprites/trees.png");
+    public static final SpriteSheet WATER = new SpriteSheet("/sprites/water.png");
     
     public static final SpriteSheet OTHER = new SpriteSheet("/sprites/other.png");
 

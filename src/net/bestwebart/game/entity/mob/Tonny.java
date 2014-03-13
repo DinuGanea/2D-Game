@@ -1,7 +1,6 @@
 package net.bestwebart.game.entity.mob;
 
 import net.bestwebart.game.Game;
-import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.gfx.Sprite;
 import net.bestwebart.game.level.tiles.AnimatedTile;
 import net.bestwebart.game.level.tiles.Tile;
@@ -51,15 +50,10 @@ public class Tonny extends Mob {
 	}
 
 	if (nx == 0 && ny == 0) {
-	    // moving = false;
+	    moving = false;
 	} else {
 	    move(nx, ny);
 	}
 
     }
-
-    public void render(Screen screen) {
-	screen.renderAnimatedTiles((int) x, (int) y, animTile, flip, tileNr);
-    }
-
 }

@@ -3,7 +3,10 @@ package net.bestwebart.game.level.tiles;
 import net.bestwebart.game.gfx.Screen;
 import net.bestwebart.game.gfx.Sprite;
 import net.bestwebart.game.level.tiles.animated_tiles.MobTile;
+import net.bestwebart.game.level.tiles.animated_tiles.Water;
+import net.bestwebart.game.level.tiles.animated_tiles.Waves;
 import net.bestwebart.game.level.tiles.static_tiles.Grass;
+import net.bestwebart.game.level.tiles.static_tiles.Tree;
 import net.bestwebart.game.level.tiles.static_tiles.Wall;
 
 public abstract class Tile {
@@ -21,6 +24,9 @@ public abstract class Tile {
     
     public static final Tile GRASS = new Grass(1, Sprite.GRASS);
     public static final Tile WALL = new Wall(2, Sprite.WALL);
+    public static final Tile TREE = new Tree(3, Sprite.TREE);
+    public static final Tile WATER = new Water(4, Sprite.WATER, false, 500, 3);
+    public static final Tile WAVES = new Waves(5, Sprite.WAVES, false, 400, 3);
 
     public static final Tile PLAYER_UP = new MobTile(20, Sprite.PLAYER_UP, true, 120, 3);
     public static final Tile PLAYER_DOWN = new MobTile(21, Sprite.PLAYER_DOWN, true, 120, 3);
@@ -44,6 +50,7 @@ public abstract class Tile {
 
     public static final int GRASS_COL = 0xff00ff00;
     public static final int WALL_COL = 0xff151f25;
+    public static final int WATER_COL = 0xff1c85fa;
 
     public Tile(int id, Sprite sprite, boolean solid) {
 	this.id = id;

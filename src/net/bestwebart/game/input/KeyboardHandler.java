@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 public class KeyboardHandler implements KeyListener {
 
     public boolean up, down, left, right;
-    public boolean invisible;
+    public boolean invisible, boost;
     public boolean pause, menu;
 
     private boolean keys[] = new boolean[260];
@@ -20,6 +20,7 @@ public class KeyboardHandler implements KeyListener {
 	right = keys[KeyEvent.VK_D] || keys[KeyEvent.VK_RIGHT];
 
 	invisible = keys[KeyEvent.VK_I];
+	boost = keys[KeyEvent.VK_SHIFT];
 
 	pause = keys[KeyEvent.VK_PAUSE];
 
