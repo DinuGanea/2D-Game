@@ -172,7 +172,6 @@ public class Level {
     }
 
     public synchronized void renderEntities(Screen screen) {
-
 	for (Particle particle : particles) {
 	    particle.render(screen);
 	}
@@ -186,7 +185,6 @@ public class Level {
 		mob.render(screen);
 	    }
 	}
-
     }
 
     public void addEntity(Entity e) {
@@ -239,7 +237,7 @@ public class Level {
 
     public boolean isMobCollision(int x, int y, Projectile projectile) {
 	for (int i = 0; i < mobs.size(); i++) {
-	    if (mobs.get(i) != null && mobs.get(i).getUniqueID() != projectile.getSource().getUniqueID()) {
+	    if (mobs.get(i) != null && projectile.getSource() != null && mobs.get(i).getUniqueID() != projectile.getSource().getUniqueID()) {
 		int mx = (int) mobs.get(i).getX();
 		int my = (int) mobs.get(i).getY();
 		if (x > mx + 10 && x < mx + 20 && y > my - 5 && y < my + 30) {

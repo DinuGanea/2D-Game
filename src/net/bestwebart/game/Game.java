@@ -1,6 +1,5 @@
 package net.bestwebart.game;
 
-import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -55,9 +54,9 @@ public class Game extends Canvas implements Runnable {
     public static Level level;
     public static Game game;
 
-    private final JFrame frame;
+    private JFrame frame;
     private Thread thread;
-    private final Screen screen;
+    private Screen screen;
 
     public Player player;
     public KeyboardHandler key;
@@ -76,19 +75,34 @@ public class Game extends Canvas implements Runnable {
     private final int pixels[] = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
     public Game() {
-	
-	rand = new Random();
-	
-	setPreferredSize(SIZE);
-
-	game = this;
 	frame = new JFrame(NAME);
+	game = this;
 	screen = new Screen(WIDTH, HEIGHT);
 	level = new Level("/levels/test.png");
 	key = new KeyboardHandler();
 	mouse = new MouseHandler();
 	window = new WindowHandler(this);
+	rand = new Random();
+			
+	frame.setPreferredSize(SIZE);
+	frame.setResizable(false);
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frame.pack();
+	frame.setVisible(true);
+	frame.setLocationRelativeTo(null);
 
+	addKeyListener(key);
+	addMouseListener(mouse);
+	addMouseMotionListener(mouse);	
+	frame.addWindowListener(window);
+	frame.add(this);
+	
+	init();
+	start();
+    }
+    
+    
+    private void init() {
 	int run_server = JOptionPane.showConfirmDialog(null, "Run the server ? ");
 	if (run_server == 0) {
 	    server = new Server(this);
@@ -175,12 +189,7 @@ public class Game extends Canvas implements Runnable {
 	    packetNPC = new Packet05AddNPC((int) bad_tonny.getX(), (int) bad_tonny.getY(), bad_tonny.getHP(), bad_tonny.getUniqueID(), MobType.BAD_TONNY.getID());
 	    packetNPC.writeData(client);
 
-	}
-	
-	addKeyListener(key);
-	addMouseListener(mouse);
-	addMouseMotionListener(mouse);
-	frame.addWindowListener(window);
+	}	
     }
 
     public synchronized void start() {
@@ -354,6 +363,7 @@ public class Game extends Canvas implements Runnable {
 	bs.show();
 
     }
+    
 
     public Level getLevel() {
 	return level;
@@ -383,29 +393,8 @@ public class Game extends Canvas implements Runnable {
 	return player;
     }
 
-    // public static JPanel menu = new JPanel();
-
     public static void main(String[] args) {
-	Game game = new Game();
-	game.frame.setResizable(true);
-	game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	game.frame.setLayout(new BorderLayout());
-	game.frame.add(game, BorderLayout.CENTER);
-
-	// Menu TEST
-	/*
-	 * menu.setLayout(new GridLayout(1, 4)); menu.add(new
-	 * JButton("Button 1")); menu.add(new JButton("Button 2")); menu.add(new
-	 * JButton("Button 3")); menu.add(new JButton("Button 4"));
-	 * game.frame.add(menu, BorderLayout.SOUTH); menu.setVisible(false);
-	 */
-
-	game.frame.pack();
-	game.frame.setVisible(true);
-	// game.frame.setUndecorated(true);
-	// game.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-	game.frame.setLocationRelativeTo(null);
-	game.start();
+	new Game();
     }
 
 }
